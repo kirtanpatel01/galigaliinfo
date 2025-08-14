@@ -1,0 +1,42 @@
+export const shopData: ShowcaseCardItem[] = [
+  {
+    id: "20",
+    image: "/snack_world.png",
+    title: "Snack World",
+    shopName: "Crunchy Heaven",
+    rating: 4.5,
+    address: "Ellora Park, Vadodara, Gujarat - 390023",
+  },
+  {
+    id: "17",
+    image: "/snack_master.png",
+    title: "Snack Master",
+    shopName: "The Gujju Way",
+    rating: 4.9,
+    address: "New VIP Road, Vadodara, Gujarat - 390022",
+  },
+  {
+    id: "15",
+    image: "/farsan_corner.png",
+    title: "Farsan Corner",
+    shopName: "Crispy Crunch",
+    rating: 4.7,
+    address: "Waghodia Road, Vadodara, Gujarat - 390025",
+  },
+  {
+    id: "12",
+    image: "/snack_corner.png",
+    title: "Snack Corner",
+    shopName: "Urban Taste",
+    rating: 4.2,
+    address: "Tarsali, Vadodara, Gujarat - 390009",
+  },
+  {
+    id: "8",
+    image: "/farsan_shop.png",
+    title: "Farsan Hub",
+    shopName: "Snacks Paradise",
+    rating: 4.4,
+    address: "Manjalpur, Vadodara, Gujarat - 390011",
+  },
+]

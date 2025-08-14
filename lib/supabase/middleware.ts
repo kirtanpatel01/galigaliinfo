@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { hasEnvVars } from "../utils";
+import { getUserRole } from "../get-user-role";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -47,15 +48,40 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  const url = request.nextUrl.clone();
+  const path = url.pathname;
+
   if (
-    request.nextUrl.pathname !== "/" &&
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
+    (path.startsWith("/admin") ||
+      path.startsWith("/business") ||
+      path.startsWith("/normal/self-pick-up") ||
+      path.startsWith("/normal/profile")) &&
+    !user
   ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
+    return NextResponse.redirect(url);
+  }
+
+  const role = await getUserRole();
+
+  if (role === "business" && (path === "/" || path === "")) {
+    url.pathname = "/business/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  // Role-based protection
+  if (path.startsWith("/admin") && role !== "admin") {
+    url.pathname = "/unauthorized";
+    return NextResponse.redirect(url);
+  }
+
+  if (path.startsWith("/business") && role !== "business") {
+    url.pathname = "/unauthorized";
+    return NextResponse.redirect(url);
+  }
+
+  if (path.startsWith("/normal") && role !== "normal") {
+    url.pathname = "/unauthorized";
     return NextResponse.redirect(url);
   }
 

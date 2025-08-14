@@ -1,0 +1,51 @@
+export const pickUpsMockData: PickUpsTableItem[] = [
+  {
+    id: "SPU-1001",
+    customerName: "kjpatel",
+    amount: 450,
+    noProducts: 5,
+    status: "pending",
+  },
+  {
+    id: "SPU-1002",
+    customerName: "kiton",
+    amount: 320,
+    noProducts: 3,
+    status: "accepted",
+  },
+  {
+    id: "SPU-1003",
+    customerName: "kirtan",
+    amount: 1500,
+    noProducts: 2,
+    status: "rejected",
+  },
+  {
+    id: "SPU-1004",
+    customerName: "mohit",
+    amount: 890,
+    noProducts: 7,
+    status: "confirm",
+  },
+  {
+    id: "SPU-1005",
+    customerName: "kanho",
+    amount: 600,
+    noProducts: 4,
+    status: "pending",
+  },
+  {
+    id: "SPU-1006",
+    customerName: "nishant",
+    amount: 2999,
+    noProducts: 1,
+    status: "accepted",
+  },
+  {
+    id: "SPU-1007",
+    customerName: "greg",
+    amount: 250,
+    noProducts: 2,
+    status: "confirm",
+  },
+];
