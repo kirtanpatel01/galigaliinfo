@@ -37,7 +37,7 @@ export async function fetchOrderInfo(orderId: number): Promise<OrderInfo> {
       `
     )
     .eq("id", orderId)
-    .single();
+    .maybeSingle();
 
   if (error || !data) throw error ?? new Error("Order not found");
 
@@ -46,7 +46,9 @@ export async function fetchOrderInfo(orderId: number): Promise<OrderInfo> {
     status: data.status,
     total_amount: Number(data.total_amount),
     no_of_products: Number(data.no_of_products),
-    customer_name: data.profile?.fullName ?? null,
+    customer_name: Array.isArray(data.profile)
+      ? ((data.profile as OrderRow["profile"][])[0]?.fullName ?? null)
+      : (data.profile as OrderRow["profile"])?.fullName ?? null,
   };
 }
 
