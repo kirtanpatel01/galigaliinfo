@@ -9,19 +9,21 @@ import { useOrderItems } from "@/hooks/use-order-items";
 import { updateOrderStatus } from "@/actions/order.actions";
 import { useOrderInfo } from "@/hooks/use-order-info";
 
-export default function Page({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function Page({ params }: PageProps) {
   const orderId = Number(params.id);
 
   const { data: products = [], isLoading: loadingItems, refetch } = useOrderItems(orderId);
   const { data: orderInfo, isLoading: loadingInfo } = useOrderInfo(orderId);
 
-  console.log(orderInfo)
   async function handleConfirm() {
     try {
-      await updateOrderStatus({
-        orderId,
-        status: "confirmed",
-      });
+      await updateOrderStatus({ orderId, status: "confirmed" });
       await refetch();
     } catch (err) {
       console.error(err);
