@@ -4,19 +4,14 @@ import { DataTable } from "@/components/data-table/data-table";
 import { orderProductsColumns } from "@/components/data-table/order-products-columns";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
+import React, { use } from "react";
 import { useOrderItems } from "@/hooks/use-order-items";
 import { updateOrderStatus } from "@/actions/order.actions";
 import { useOrderInfo } from "@/hooks/use-order-info";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function Page({ params }: PageProps) {
-  const orderId = Number(params.id);
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
+  const orderId = Number(id);
 
   const { data: products = [], isLoading: loadingItems, refetch } = useOrderItems(orderId);
   const { data: orderInfo, isLoading: loadingInfo } = useOrderInfo(orderId);
