@@ -28,7 +28,7 @@ export default function ProductOffers({ offers }: ProductOffersProps) {
             className="flex justify-between items-center border p-2 rounded-md bg-yellow-50 border-yellow-200 dark:bg-yellow-900/10 dark:border-yellow-700"
           >
             <span className="font-medium text-gray-800 dark:text-gray-200">
-              {generateDesc(offer.type, offer)}
+              {generateDesc(offer.type, { ...offer, expiry: offer.expiry ?? undefined })}
             </span>
 
             {offer.expiry && (
