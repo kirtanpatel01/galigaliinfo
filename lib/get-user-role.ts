@@ -15,3 +15,4 @@ export async function getUserRole(): Promise<"admin" | "business" | "normal" | "
 
   return "public";
 }
+

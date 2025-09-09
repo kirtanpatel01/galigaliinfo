@@ -4,6 +4,7 @@ import AdAside from "@/components/layout/ad-aside";
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getUserRole } from "@/lib/get-user-role";
+import { Toaster } from "sonner";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const role = await getUserRole();
@@ -18,6 +19,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       >
         <AppSidebar role={role} />
         <SidebarInset>
+          <Toaster richColors />
           {children}
         </SidebarInset>
         <AdAside />

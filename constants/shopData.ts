@@ -1,6 +1,6 @@
 export const shopData: ShowcaseCardItem[] = [
   {
-    id: "20",
+    id: 20,
     image: "/snack_world.png",
     title: "Snack World",
     shopName: "Crunchy Heaven",
@@ -8,7 +8,7 @@ export const shopData: ShowcaseCardItem[] = [
     address: "Ellora Park, Vadodara, Gujarat - 390023",
   },
   {
-    id: "17",
+    id: 17,
     image: "/snack_master.png",
     title: "Snack Master",
     shopName: "The Gujju Way",
@@ -16,7 +16,7 @@ export const shopData: ShowcaseCardItem[] = [
     address: "New VIP Road, Vadodara, Gujarat - 390022",
   },
   {
-    id: "15",
+    id: 5,
     image: "/farsan_corner.png",
     title: "Farsan Corner",
     shopName: "Crispy Crunch",
@@ -24,7 +24,7 @@ export const shopData: ShowcaseCardItem[] = [
     address: "Waghodia Road, Vadodara, Gujarat - 390025",
   },
   {
-    id: "12",
+    id: 2,
     image: "/snack_corner.png",
     title: "Snack Corner",
     shopName: "Urban Taste",
@@ -32,7 +32,7 @@ export const shopData: ShowcaseCardItem[] = [
     address: "Tarsali, Vadodara, Gujarat - 390009",
   },
   {
-    id: "8",
+    id: 8,
     image: "/farsan_shop.png",
     title: "Farsan Hub",
     shopName: "Snacks Paradise",

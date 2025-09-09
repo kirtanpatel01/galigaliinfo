@@ -36,7 +36,6 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   filterColumnName,
-  selection = false,
   paginantion = false,
   onRowClick,
   canSelectRow,
@@ -65,13 +64,11 @@ export function DataTable<TData, TValue>({
     }
   })
 
-  console.log(selection)
-
   useEffect(() => {
   if (onSelectionChange) {
     const selectedRows = table
       .getSelectedRowModel()
-      .rows.map((row) => row.original)
+      .rows.map((row) => row.original) // your ProductTableItem
     onSelectionChange(selectedRows)
   }
 }, [rowSelection, table, onSelectionChange])

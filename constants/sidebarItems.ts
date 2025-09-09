@@ -4,12 +4,12 @@ import { Home, ShoppingBag, HandCoinsIcon, LandPlot, User2Icon, Settings, Shield
 export const sidebarItemsByRole = {
   public: [
     { title: "Home", url: "/", icon: Home },
-    { title: "Shops", url: "/shops", icon: ShoppingBag },
+    // { title: "Shops", url: "/shops", icon: ShoppingBag },
     // { title: "Assets", url: "/assets", icon: LandPlot },
   ],
   normal: [
     { title: "Home", url: "/", icon: Home },
-    { title: "Shops", url: "/shops", icon: ShoppingBag },
+    // { title: "Shops", url: "/shops", icon: ShoppingBag },
     { title: "Self Pick-Up", url: "/normal/self-pick-up", icon: HandCoinsIcon },
     // { title: "Assets", url: "/assets", icon: LandPlot },
     { title: "Profile", url: "/normal/profile", icon: User2Icon },

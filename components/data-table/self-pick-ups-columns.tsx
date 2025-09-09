@@ -4,10 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { DataTable } from './data-table'
-import { orderItemsColumns } from './order-items-columns'
 import DialogCloseBtn from "../dialog-close-btn";
-import { mockOrderProducts } from "@/constants/orderPrducts";
+import OrderItemsTable from "./order-items-table";
 
 export const selfPickUpsColumns: ColumnDef<SelfPickUpsTableItem>[] = [
   {
@@ -49,10 +47,13 @@ export const selfPickUpsColumns: ColumnDef<SelfPickUpsTableItem>[] = [
       </div>
     )
   },
+  // inside selfPickUpsColumns
   {
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
-    cell: () => {
+    cell: ({ row }) => {
+      const orderId = row.original.id;
+
       return (
         <Dialog>
           <DropdownMenu>
@@ -67,22 +68,26 @@ export const selfPickUpsColumns: ColumnDef<SelfPickUpsTableItem>[] = [
                 </DropdownMenuItem>
               </DialogTrigger>
               <DropdownMenuItem>
-                <span>Delete</span>
+                <span>Cancel</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Order</DialogTitle>
+              <DialogTitle>Order #{orderId}</DialogTitle>
               <DialogDescription>List of all products in the order</DialogDescription>
             </DialogHeader>
-            <DataTable columns={orderItemsColumns} data={mockOrderProducts} />
+
+            {/* Use hook to fetch products */}
+            <OrderItemsTable orderId={orderId} />
+
             <DialogFooter>
               <DialogCloseBtn />
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )
+      );
     }
   }
 ]

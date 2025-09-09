@@ -1,0 +1,11 @@
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Debug Next.js",
+  "runtimeExecutable": "npm",
+  "runtimeArgs": ["run", "dev"],
+  "port": 9229,
+  "configurations": [
+  
+  ]
+}

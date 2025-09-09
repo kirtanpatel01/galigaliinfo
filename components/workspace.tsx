@@ -3,30 +3,30 @@
 import { useSelectedProducts } from '@/stores/useSelectedProducts'
 import React, { useState, useEffect } from 'react'
 
-interface WorkspaceProductProps {
-  product: {
-    id: string
-    productName: string
-    price: number
-    qty: number
-    unit: string
-  }
-}
-
-export default function Workspace({ product }: WorkspaceProductProps) {
+// ProductTableItem is your original product type from DB
+export default function Workspace({ product }: { product: ProductTableItem }) {
   const [qty, setQty] = useState(product.qty)
-  const [totalPrice, setTotalPrice] = useState(product.price)
   const updateProduct = useSelectedProducts((s) => s.updateProduct)
 
+  const lineTotal = product.price * qty
+
+  // Only push qty & lineTotal into store
   useEffect(() => {
-    setTotalPrice(product.price * qty)
-    updateProduct(product.id, { qty, price: product.price });
-  }, [qty, product.price, product.id, updateProduct])
+    updateProduct(product.id, {
+      qty,
+      lineTotal,
+    })
+  }, [qty, product.id, product.price, lineTotal, updateProduct])
+
+  useEffect(() => {
+    // whenever a new product arrives, reset the qty state to its value
+    setQty(product.qty)
+  }, [product.qty]) // or [product] if id might stay the same
 
   return (
-    <div className="border space-y-4">
-      <h2 className="text-lg font-semibold">{product.productName}</h2>
-      
+    <div className="border space-y-4 p-2">
+      <h2 className="text-lg font-semibold capitalize">{product.name}</h2>
+
       <div className="flex items-center gap-2">
         <label className="text-sm font-medium">Qty:</label>
         <input
@@ -36,7 +36,7 @@ export default function Workspace({ product }: WorkspaceProductProps) {
           onChange={(e) => setQty(Number(e.target.value))}
           className="w-20 border rounded px-2 py-1"
         />
-        <span>{product.unit}</span>
+        <span>{product.qty_unit}</span>
       </div>
 
       <div className="text-sm">
@@ -44,7 +44,7 @@ export default function Workspace({ product }: WorkspaceProductProps) {
       </div>
 
       <div className="text-lg font-bold">
-        Total: ${totalPrice.toFixed(2)}
+        Total: ${lineTotal.toFixed(2)}
       </div>
     </div>
   )

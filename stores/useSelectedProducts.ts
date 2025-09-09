@@ -2,18 +2,16 @@
 import { create } from "zustand";
 
 export interface SelectedProduct {
-  id: string;
-  productName: string;
-  price: number;
+  id: number;
   qty: number;
-  unit: string;
+  lineTotal: number;
 }
 
 interface SelectedProductsState {
   products: SelectedProduct[];
   addProduct: (product: SelectedProduct) => void;
-  updateProduct: (id: string, changes: Partial<SelectedProduct>) => void;
-  removeProduct: (id: string) => void;
+  updateProduct: (id: number, changes: Partial<SelectedProduct>) => void;
+  removeProduct: (id: number) => void;
   clear: () => void;
 }
 
@@ -21,7 +19,6 @@ export const useSelectedProducts = create<SelectedProductsState>((set) => ({
   products: [],
   addProduct: (product) =>
     set((state) => {
-      // avoid duplicates
       if (state.products.some((p) => p.id === product.id)) return state;
       return { products: [...state.products, product] };
     }),

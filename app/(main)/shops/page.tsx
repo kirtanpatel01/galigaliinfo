@@ -1,10 +1,34 @@
-import ShowcasePage from '@/components/showcase/ShowcasePage'
-import { shopData } from '@/constants/shopData'
+'use client'
 
-function page() {
+import ShowcasePage from '@/components/showcase/ShowcasePage'
+import { useAllProfile } from '@/hooks/use-all-profiles'
+
+function Page() {
+  const { data: profiles, isLoading, isError, error } = useAllProfile("business")
+
+  if (isLoading) return <div>Loading profiles...</div>
+  if (isError) return <div>Error loading profiles: {error?.message}</div>
+
+  // Map profiles to ShowcaseCardItem
+  const showcaseItems = (profiles || []).map(profile => ({
+    type: 'shop' as const,
+    id: profile.id,
+    image: profile.avatar || profile.shopPhoto || '', // fallback image
+    title: profile.shopName || profile.fullName || 'Unknown',
+    shopName: profile.shopName || '',
+    fullName: profile.fullName,
+    address: profile.address || '',
+    shopPhoto: profile.shopPhoto,
+    rating: undefined, // optional
+    timeAgo: undefined, // optional
+  }))
+
   return (
-    <ShowcasePage type='shop' showcaseItems={shopData} />
+    <ShowcasePage 
+      type='shop' 
+      showcaseItems={showcaseItems} 
+    />
   )
 }
 
-export default page
+export default Page

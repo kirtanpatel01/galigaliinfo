@@ -1,23 +1,32 @@
-import AdForm from '@/components/ad-form'
-import { adsColumns } from '@/components/data-table/ads-columns'
-import { DataTable } from '@/components/data-table/data-table'
-import { Separator } from '@/components/ui/separator'
-import { mockAds } from '@/constants/adItems'
-import React from 'react'
+'use client'
 
-function page() {
+import { adsColumns } from "@/components/data-table/ads-columns";
+import { DataTable } from "@/components/data-table/data-table";
+import { Separator } from "@/components/ui/separator";
+import AdForm from "@/components/ad-form";
+import { useAdsByUser } from "@/hooks/use-ads-by-user";
+
+function Page() {
+  const { data: ads = [], isLoading } = useAdsByUser();
+
   return (
     <div>
-      <header className='p-4 flex justify-between items-center'>
-        <span className='font-semibold text-lg'>No. of ads re running: 5</span>
+      <header className="p-4 flex justify-between items-center">
+        <span className="font-semibold text-lg">
+          No. of ads running: {ads.length}
+        </span>
         <AdForm editable={false} />
       </header>
       <Separator />
-      <div className='p-6 max-w-2xl'>
-        <DataTable columns={adsColumns} data={mockAds} />
+      <div className="p-6 max-w-2xl">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <DataTable columns={adsColumns} data={ads} />
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default page
+export default Page;

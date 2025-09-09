@@ -33,7 +33,7 @@ export const productColumns: ColumnDef<ProductTableItem>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "productName",
+    accessorKey: "name",
     header: "Product Name"
   },
   {
@@ -57,7 +57,7 @@ export const productColumns: ColumnDef<ProductTableItem>[] = [
     header: () => <div className="text-center">Quantity</div>,
     cell: ({ row }) => {
       const qty = row.original.qty; // from the full object
-      const unit = row.original.unit;
+      const unit = row.original.qty_unit;
       return (
         <div className="text-center">
           {qty} {unit}

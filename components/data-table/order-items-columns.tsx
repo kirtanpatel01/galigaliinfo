@@ -1,5 +1,6 @@
 "use client"
 
+import { OrderProductItem } from "@/hooks/use-order-items";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const orderItemsColumns: ColumnDef<OrderProductItem>[] = [

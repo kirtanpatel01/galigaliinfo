@@ -1,23 +1,85 @@
-type ShowcaseCardItem = {
-  id: string
-  image: string
-  title: string
-  shopName: string
-  rating: number
-  address: string
-  timeAgo?: string
+// types/product.ts
+type Offer = {
+  id: string;
+  type: "buy-get" | "percentage-discount" | "flat-amount-discount" | "quantity-discount" | "limited-time-offer";
+  description: string;
+  percentage?: number;
+  amount?: number;
+  qty?: number;
+  price?: number;
+  expiry?: string | null;
 }
 
+type Profile = {
+  fullName: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  country: string
+  pincode: number
+  shopName: string
+}
+
+type ReviewProfile = {
+  fullName: string
+  username: string
+  avatar: string
+}
+
+type Product = {
+  id: number
+  user_id: string
+  name: string
+  description: string
+  images: string[]
+  price: number;
+  qty: number;
+  qty_unit: string;
+  qty_available: number;
+  created_at: string
+  offers: Offer[]
+  profile: Profile | null
+  isHidden: boolean
+}
+
+type Review = {
+  id: number
+  created_at: string
+  rating: number | null
+  content: string
+  user_id: string
+  profile?: {
+    fullName: string | null
+    username: string | null
+    avatar: string | null
+  } | null
+}
+
+type ShowcaseCardItem = {
+  type?: 'shop' | 'product' | "self-pick-up" | "business";
+  id: number;
+  image?: string;
+  title: string;
+  shopName: string;
+  fullName?: string;
+  address: string;
+  rating?: number;
+  timeAgo?: string;
+  isHidden?: boolean;
+  shopPhoto?: string;
+};
+
 type SelfPickUpsTableItem = {
-  id: string;
+  id: number;
   shopName: string;
   amount: number;
   noProducts: number;
   status: "pending" | "rejected" | "accepted" | "confirm";
-}
+};
 
 type PickUpsTableItem = {
-  id: string;
+  id: number;
   customerName: string;
   amount: number;
   noProducts: number;
@@ -28,31 +90,25 @@ type OrderItem = {
   productId: string;
   productName: string;
   quantity: number;
-  unit: string;
+  qty_unit: string;
   pricePerUnit: number;
   totalPrice: number
 }
 
 type ProductTableItem = {
-  id: string;
-  productName: string;
+  id: number;
+  name: string;
   stock: "available" | "unavailable";
   price: number;
   qty: number;
-  unit: string;
+  qty_unit: string;
+  lineTotal: number;
 }
 
-type OrderProductItem = {
-  id: string;
-  productName: string;
-  qty: number;
-  unit: string;
-  price: number;
-}
-
-type AdItem = {
-  id: string;
-  productName: string;
-  clicks: number;
-  views: number;
+type TableProduct = {
+  id: number
+  name: string
+  price: number
+  qty: number
+  qty_unit: string
 }

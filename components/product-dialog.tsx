@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductForm from './product-form'
+import ProductForm from './product-form/product-form'
 import {
   Dialog,
   DialogContent,
@@ -16,11 +16,11 @@ function ProductDialog({ editable }: { editable?: boolean }) {
       <DialogTrigger asChild>
         {editable ? (
           <Button className='w-full text-start px-2 py-1 rounded hover:bg-accent'>
-              Edit
+            Edit
           </Button>
-          ) : (
-            <Button>Add new product</Button>
-          )}
+        ) : (
+          <Button>Add new product</Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -1,4 +1,6 @@
-import { Table } from "@tanstack/react-table"
+'use client'
+
+import React, { useCallback, useMemo } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -6,94 +8,84 @@ import {
   ChevronsRight,
 } from "lucide-react"
 
-import { Button } from "../ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select"
-
 interface DataTablePaginationProps<TData> {
-  table: Table<TData>
+  table: import("@tanstack/react-table").Table<TData>
 }
 
-export function DataTablePagination<TData>({
-  table,
-}: DataTablePaginationProps<TData>) {
+export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
+  // memoized derived values (avoid calling these repeatedly inline)
+  const selectedCount = useMemo(() => table.getFilteredSelectedRowModel().rows.length, [table])
+  const filteredCount = useMemo(() => table.getFilteredRowModel().rows.length, [table])
+  const pageSize = table.getState().pagination.pageSize ?? 8
+  const pageIndex = table.getState().pagination.pageIndex ?? 0
+  const pageCount = table.getPageCount()
+
+  // stable handlers that guard against redundant updates
+  const onChangePageSize = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSize = Number(e.target.value)
+    if (Number.isFinite(newSize) && newSize > 0 && newSize !== table.getState().pagination.pageSize) {
+      table.setPageSize(newSize)
+    }
+  }, [table])
+
+  const goFirst = useCallback(() => {
+    if (table.getCanPreviousPage()) table.setPageIndex(0)
+  }, [table])
+
+  const goPrev = useCallback(() => {
+    if (table.getCanPreviousPage()) table.previousPage()
+  }, [table])
+
+  const goNext = useCallback(() => {
+    if (table.getCanNextPage()) table.nextPage()
+  }, [table])
+
+  const goLast = useCallback(() => {
+    if (table.getCanNextPage()) table.setPageIndex(Math.max(0, table.getPageCount() - 1))
+  }, [table])
+
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between px-2 space-y-4">
       <div className="text-muted-foreground flex-1 text-sm self-start">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {selectedCount} of {filteredCount} row(s) selected.
       </div>
+
       <div className="flex flex-col min-[425px]:flex-row items-center space-x-6 lg:space-x-8 space-y-4">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
-          <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value))
-            }}
+
+          {/* Native select (stable, simpler than custom Select) */}
+          <select
+            className="h-8 w-[70px] rounded border px-2"
+            value={String(pageSize)}
+            onChange={onChangePageSize}
           >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {[8, 15, 20, 25, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            {[8, 15, 20, 25, 30, 40, 50].map((ps) => (
+              <option key={ps} value={String(ps)}>{ps}</option>
+            ))}
+          </select>
         </div>
+
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
+          Page {pageIndex + 1} of {pageCount}
         </div>
+
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className="flex md:hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to first page</span>
+          <button onClick={goFirst} disabled={!table.getCanPreviousPage()} aria-label="Go to first page">
             <ChevronsLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-8"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to previous page</span>
+          </button>
+
+          <button onClick={goPrev} disabled={!table.getCanPreviousPage()} aria-label="Go to previous page">
             <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-8"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to next page</span>
+          </button>
+
+          <button onClick={goNext} disabled={!table.getCanNextPage()} aria-label="Go to next page">
             <ChevronRight />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="flex md:hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to last page</span>
+          </button>
+
+          <button onClick={goLast} disabled={!table.getCanNextPage()} aria-label="Go to last page">
             <ChevronsRight />
-          </Button>
+          </button>
         </div>
       </div>
     </div>
