@@ -114,7 +114,7 @@ return (
   <Form {...form}>
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md border border-gray-200 p-8 space-y-8"
+      className="max-w-3xl mx-auto bg-card rounded-2xl shadow-md border p-8 space-y-8"
     >
       {/* Header */}
       <div className="space-y-1 text-center">

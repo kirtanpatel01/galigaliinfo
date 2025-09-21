@@ -5,6 +5,7 @@ import { DataTable } from "@/components/data-table/data-table";
 import { Separator } from "@/components/ui/separator";
 import AdForm from "@/components/ad-form";
 import { useAdsByUser } from "@/hooks/use-ads-by-user";
+import LoadingSpinner from "@/components/loading-spinner";
 
 function Page() {
   const { data: ads = [], isLoading } = useAdsByUser();
@@ -20,7 +21,7 @@ function Page() {
       <Separator />
       <div className="p-6 max-w-2xl">
         {isLoading ? (
-          <div>Loading...</div>
+          <LoadingSpinner />
         ) : (
           <DataTable columns={adsColumns} data={ads} />
         )}

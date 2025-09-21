@@ -23,6 +23,7 @@ import { User } from "@supabase/supabase-js"
 import { useProfileByUserId } from "@/hooks/use-profile"
 import { ArrowUpRightFromSquareIcon } from "lucide-react"
 import Link from "next/link"
+import LoadingSpinner from "@/components/loading-spinner"
 
 const baseSchema = z.object({
   username: z.string().min(6).max(50),
@@ -170,7 +171,7 @@ function Page() {
       </div>
     </div>
   )
-  if (isLoading) return <p>Loading profile...</p>
+  if (isLoading) return <LoadingSpinner />
   if (isError) return <p>Error: {String(error)}</p>
 
   const isBusiness = user?.user_metadata?.data.role === "business";

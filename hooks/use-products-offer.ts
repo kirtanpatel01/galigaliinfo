@@ -1,3 +1,4 @@
+// hooks/use-products-with-offers.ts
 "use client"
 
 import { createClient } from "@/lib/supabase/client"
@@ -11,7 +12,7 @@ export function mapProductToCardItem(product: any): ShowcaseCardItem {
     title: product.name,
     shopName: product.profile?.shopName ?? "Unknown Shop",
     address: product.profile?.address ?? "",
-    rating: 4.5,
+    rating: product.avgRating ?? 0, // use aggregated rating
     timeAgo: new Date(product.created_at).toLocaleDateString(),
     isHidden: product.isHidden,
   }
@@ -19,6 +20,7 @@ export function mapProductToCardItem(product: any): ShowcaseCardItem {
 
 async function fetchProductsWithOffers() {
   const supabase = createClient()
+
   const { data, error } = await supabase
     .from("products")
     .select(`
@@ -43,12 +45,25 @@ async function fetchProductsWithOffers() {
         phone,
         address,
         shopName
+      ),
+      reviews!reviews_product_id_fkey (
+        rating
       )
     `)
     .order("created_at", { ascending: false })
 
   if (error) throw error
-  return data
+
+  // calculate average rating manually since Supabase returns array of reviews
+  return data.map((product) => {
+    let avgRating = 0
+    if (product.reviews && product.reviews.length > 0) {
+      avgRating =
+        product.reviews.reduce((acc, r) => acc + (r.rating ?? 0), 0) /
+        product.reviews.length
+    }
+    return { ...product, avgRating }
+  })
 }
 
 export function useProductsWithOffers() {
@@ -61,24 +76,35 @@ export function useProductsWithOffers() {
     refetchOnWindowFocus: false,
   })
 
-  // ✅ subscribe to realtime changes
+  // ✅ subscribe to realtime changes for products + reviews
   useEffect(() => {
     const supabase = createClient()
 
-    const channel = supabase
+    const productsChannel = supabase
       .channel("products-changes")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "products" },
         () => {
-          // invalidate cache so UI refreshes
+          queryClient.invalidateQueries({ queryKey: ["products-with-offers"] })
+        }
+      )
+      .subscribe()
+
+    const reviewsChannel = supabase
+      .channel("reviews-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "reviews" },
+        () => {
           queryClient.invalidateQueries({ queryKey: ["products-with-offers"] })
         }
       )
       .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      supabase.removeChannel(productsChannel)
+      supabase.removeChannel(reviewsChannel)
     }
   }, [queryClient])
 

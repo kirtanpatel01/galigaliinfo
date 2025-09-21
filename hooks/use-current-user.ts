@@ -1,19 +1,22 @@
 // lib/hooks/use-current-user.ts
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { User } from "@supabase/supabase-js";
+import { AuthError, User } from "@supabase/supabase-js";
 
 export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<AuthError | null>(null); 
   const supabase = createClient();
 
   useEffect(() => {
     async function loadUser() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
     }
+
+    if(error) setError(error)
 
     loadUser();
 
@@ -26,5 +29,5 @@ export function useCurrentUser() {
     };
   }, [supabase]);
 
-  return { user, loading };
+  return { user, loading, error };
 }

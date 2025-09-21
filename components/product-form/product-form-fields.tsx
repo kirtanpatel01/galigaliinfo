@@ -42,7 +42,7 @@ export default function ProductFormFields({ control }: Props) {
                     {...field}
                     placeholder={placeholder}
                     value={typeof field.value === "string" ? field.value : ""}
-                    className="resize-none rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="resize-none rounded-xl border border-border focus:border-blue-500 focus:ring-blue-500"
                     rows={4}
                   />
                 ) : (
@@ -55,7 +55,7 @@ export default function ProductFormFields({ control }: Props) {
                       const val = e.target.value
                       field.onChange(type === "number" ? (val === "" ? undefined : Number(val)) : val)
                     }}
-                    className="rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="rounded-xl border-border focus:border-blue-500 focus:ring-blue-500"
                   />
                 )}
               </FormControl>

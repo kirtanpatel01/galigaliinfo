@@ -10,13 +10,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../ui/sidebar'
-import { LogIn, Map } from 'lucide-react'
+import { LogIn } from 'lucide-react'
 import Link from 'next/link'
 
 import { sidebarItemsByRole } from "@/constants/sidebarItems"
 import { SidebarThemeSwitcher } from './theme-switcher'
 import { createClient } from '@/lib/supabase/server'
 import { LogoutButton } from '../auth/logout-button'
+import Image from 'next/image'
 
 type AppSidebarProps = {
   role: "public" | "normal" | "business" | "admin";
@@ -35,7 +36,7 @@ async function AppSidebar({ role, className = "" }: AppSidebarProps) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
               <Link href="/">
-                <Map className="size-5!" />
+                <Image src={'/logo.png'} alt='logo' height={48} width={48} className='w-8 h-8 rounded-full'/>
                 <span className="font-sans text-lg font-bold bg-linear-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">Gali Gali Info</span>
               </Link>
             </SidebarMenuButton>

@@ -3,13 +3,14 @@
 import React, { use } from 'react'
 import { useProductById } from '@/hooks/use-product-by-id'
 import ProductForm from '@/components/product-form/product-form'
+import LoadingSpinner from '@/components/loading-spinner'
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const { data: product, isLoading, isError } = useProductById(id)
 
   if (isLoading) {
-    return <div className="p-6">Loading...</div>
+    return <LoadingSpinner />
   }
 
   if (isError || !product) {

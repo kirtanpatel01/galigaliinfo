@@ -15,15 +15,18 @@ function ProductImageGallery({ images, name }: { images: string[]; name: string 
   }
 
   return (
-    <div className="space-y-4 border rounded-md p-4">
-      <h2 className='mb-2 text-2xl font-bold capitalize'>{name}</h2>
+    <div className="space-y-4 border rounded-lg p-4 bg-card shadow-md">
+      <h2 className="mb-2 text-2xl font-bold capitalize text-card-foreground">
+        {name}
+      </h2>
+
       {/* Active Image */}
-      <div className="relative w-full h-[250px] sm:h-[300px] lg:h-[350px] border rounded-md overflow-hidden">
+      <div className="relative w-full h-[250px] sm:h-[300px] lg:h-[350px] border rounded-xl overflow-hidden shadow-md">
         <Image
           src={images[activeIndex]}
           alt={`${name} image ${activeIndex + 1}`}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-300 hover:scale-[1.02]"
         />
       </div>
 
@@ -31,8 +34,11 @@ function ProductImageGallery({ images, name }: { images: string[]; name: string 
       <div className="relative flex items-center">
         {/* Left Button */}
         <Button
-          size={"icon"}
-          onClick={() => scrollRow("left")}>
+          size="icon"
+          variant="secondary"
+          className="rounded-full shadow-sm hover:shadow-md"
+          onClick={() => scrollRow("left")}
+        >
           <ChevronLeft className="w-5 h-5" />
         </Button>
 
@@ -44,8 +50,10 @@ function ProductImageGallery({ images, name }: { images: string[]; name: string 
             <div
               key={idx}
               onClick={() => setActiveIndex(idx)}
-              className={`relative w-20 h-20 flex-shrink-0 border rounded-md cursor-pointer overflow-hidden ${
-                idx === activeIndex ? "ring-2 ring-primary" : "opacity-80 hover:opacity-100"
+              className={`relative w-20 h-20 flex-shrink-0 border rounded-md cursor-pointer overflow-hidden transition-all ${
+                idx === activeIndex
+                  ? "ring-2 ring-accent shadow-sm"
+                  : "opacity-80 hover:opacity-100"
               }`}
             >
               <Image
@@ -60,7 +68,9 @@ function ProductImageGallery({ images, name }: { images: string[]; name: string 
 
         {/* Right Button */}
         <Button
-          size={"icon"}
+          size="icon"
+          variant="secondary"
+          className="rounded-full shadow-sm hover:shadow-md"
           onClick={() => scrollRow("right")}
         >
           <ChevronRight className="w-5 h-5" />

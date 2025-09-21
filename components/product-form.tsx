@@ -131,7 +131,7 @@ function ProductForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md border border-gray-200 p-8 space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-3xl mx-auto bg-card rounded-2xl shadow-md border border-border p-8 space-y-8">
         <div className="space-y-1 text-center">
           <h2 className="text-2xl font-semibold tracking-tight">{editable ? "Update Product" : "Add New Product"}</h2>
           <p className="text-sm text-muted-foreground">Fill in the details below to {editable ? "update" : "create"} your product.</p>
@@ -165,7 +165,7 @@ function ProductForm({
         {/* File Upload */}
         <div className="space-y-3">
           <FormLabel className="font-medium">Product Images</FormLabel>
-          <Input type="file" multiple onChange={handleFileSelect} className="cursor-pointer rounded-xl border-gray-300 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700" />
+          <Input type="file" multiple onChange={handleFileSelect} className="cursor-pointer rounded-xl border-border file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700" />
           {uploading && <p className="text-blue-500 text-sm">Uploading...</p>}
           {form.formState.errors.images && <p className="text-red-500 text-sm">{form.formState.errors.images.message}</p>}
 

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
 import React, { useEffect, useState } from 'react'
 import ProfileDetails from '@/components/profile-details'
+import LoadingSpinner from '@/components/loading-spinner'
 
 function Page() {
   const [user, setUser] = useState<User | null>(null)
@@ -30,11 +31,9 @@ function Page() {
 
   const { data: profile, isLoading, isError, error } = useProfileByUserId(user?.id || "")
 
-  if (isLoading || loadingUser) return <div className="p-6">Fetching profile data...</div>
+  if (isLoading || loadingUser) return <LoadingSpinner />
   if (isError) return <div className="p-6 text-red-500">Error: {error?.message}</div>
   if (!profile) return <div className="p-6">No profile found</div>
-
-  console.log(user)
 
   return (
     <div className="p-6">

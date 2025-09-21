@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
 
 type Profile = {
   id: number;
@@ -40,8 +39,6 @@ function ProfileDetails({ profile, role }: { profile: Profile, role?: string }) 
     created_at,
   } = profile;
 
-  console.log(shopPhoto)
-
   const isBusiness = role === "business";
 
   return (
@@ -63,11 +60,10 @@ function ProfileDetails({ profile, role }: { profile: Profile, role?: string }) 
 
         {isBusiness && shopPhoto && (
           <div className="flex-shrink-0 w-32 h-24">
-            <Image
+            <img
               src={shopPhoto}
               alt="shop-photo"
               className="w-full h-full rounded-md object-cover"
-              width={128} height={96}
             />
           </div>
         )}

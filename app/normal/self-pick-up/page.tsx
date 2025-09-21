@@ -1,6 +1,7 @@
 'use client'
 import { DataTable } from '@/components/data-table/data-table'
 import { selfPickUpsColumns } from '@/components/data-table/self-pick-ups-columns'
+import LoadingSpinner from '@/components/loading-spinner'
 import { Button } from '@/components/ui/button'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { useSelfPickUpOrders } from '@/hooks/use-orders'
@@ -30,7 +31,7 @@ export default function Page() {
       <div className='p-6'>
         <div className='max-w-2xl'>
           {isLoading ? (
-            <div>Loading orders…</div>
+            <LoadingSpinner />
           ) : (
             <DataTable columns={selfPickUpsColumns} data={orders} />
           )}

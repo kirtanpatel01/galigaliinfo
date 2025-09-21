@@ -49,16 +49,13 @@ function ShowcaseCard({
   return (
     <>
       <Card
-        className={`w-52 ${
-          type !== "business"
-            ? "cursor-pointer hover:border-slate-600/50 hover:bg-slate-500/5 hover:shadow-slate-600/20 "
-            : ""
-        }`}
+        className={`w-52 border border-border rounded-xl shadow-md hover:shadow-lg transition-all duration-200 ${type !== "business" ? "cursor-pointer" : ""
+          }`}
       >
         <CardHeader className="p-4">
           {type === "business" && (
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex-1 self-end cursor-pointer p-1 rounded-full hover:bg-accent">
+              <DropdownMenuTrigger className="flex-1 self-end cursor-pointer p-1 rounded-full hover:bg-muted transition-colors">
                 <MoreHorizontal />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -78,7 +75,7 @@ function ShowcaseCard({
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem
-                  className="text-destructive cursor-pointer"
+                  className="text-red-600 cursor-pointer hover:bg-red-50"
                   onClick={() => setOpenDialog(true)}
                 >
                   Delete
@@ -86,20 +83,21 @@ function ShowcaseCard({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
+
           {image && type !== "self-pick-up" && (
             <Image
               src={image}
               alt={title}
               height={200}
               width={200}
-              className="h-28 w-full rounded-lg object-cover"
+              className="h-28 w-full rounded-xl object-cover"
             />
           )}
           {shopPhoto && type === "self-pick-up" && (
             <Image
               src={shopPhoto}
               alt={title}
-              className="h-28 w-full rounded-lg object-cover"
+              className="h-28 w-full rounded-xl object-cover"
               height={112}
               width={164}
             />
@@ -108,23 +106,26 @@ function ShowcaseCard({
 
         <CardContent className="flex justify-between items-center p-4 pt-0">
           <div>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription className="line-clamp-1">
+            <CardTitle className="text-base font-semibold">{title}</CardTitle>
+            <CardDescription className="line-clamp-1 text-muted-foreground">
               {shopName}
             </CardDescription>
           </div>
-          <div className="border border-amber-500/20 bg-amber-200/10 rounded-md px-2 py-1 flex justify-center items-center gap-1">
-            <Star className="text-amber-300 size-4" />
-            <span>{rating}</span>
-          </div>
+          {type === "product" && (
+            <div className="border border-amber-300 bg-amber-100 rounded-md px-2 py-1 flex justify-center items-center gap-1 text-amber-700">
+            <Star className="size-4" />
+            <span className="text-sm font-medium">{rating}</span>
+          </div>)}
         </CardContent>
 
-        <Separator className="hover:bg-slate-600/50" />
+        <Separator className="bg-border hover:bg-foreground/20 transition-colors" />
 
         <CardFooter className="flex flex-col gap-4 pt-4 p-4">
-          <span className="place-self-start text-sm">{address}</span>
+          <span className="place-self-start text-sm text-muted-foreground">
+            {address}
+          </span>
           {type === "product" && timeAgo && (
-            <span className="place-self-end text-opacity-50 text-xs">
+            <span className="place-self-end text-xs italic text-muted-foreground">
               {timeAgo}
             </span>
           )}
@@ -133,18 +134,20 @@ function ShowcaseCard({
 
       {/* Alert dialog outside dropdown */}
       <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete product?</AlertDialogTitle>
+            <AlertDialogTitle className="text-lg font-semibold">
+              Delete product?
+            </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently remove your
               product from the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-md">Cancel</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
+              className="rounded-md bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
               disabled={isPending}
               onClick={() =>
                 startTransition(async () => {
@@ -161,4 +164,4 @@ function ShowcaseCard({
     </>
   )
 }
- export default ShowcaseCard
+export default ShowcaseCard

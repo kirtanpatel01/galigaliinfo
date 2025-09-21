@@ -1,5 +1,6 @@
 'use client'
 
+import LoadingSpinner from '@/components/loading-spinner'
 import ShowcasePage from '@/components/showcase/ShowcasePage'
 import { mapProductToCardItem, useProductsWithOffers } from '@/hooks/use-products-offer'
 import React from 'react'
@@ -8,7 +9,7 @@ function Page() {
   const { data: products, isLoading, isError, error } = useProductsWithOffers()
 
   if (isLoading) {
-    return <div className="p-4">Loading products...</div>
+    return  <LoadingSpinner />
   }
 
   if (isError) {
@@ -16,6 +17,7 @@ function Page() {
     return <div className="p-4 text-red-500">Failed to load products</div>
   }
 
+  console.log(products)
   return (
     <div>
       <ShowcasePage type='product' showcaseItems={(products ?? []).map(mapProductToCardItem)} />

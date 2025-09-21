@@ -1,12 +1,13 @@
 'use client'
 
+import LoadingSpinner from '@/components/loading-spinner'
 import ShowcasePage from '@/components/showcase/ShowcasePage'
 import { useAllProfile } from '@/hooks/use-all-profiles'
 
 function Page() {
   const { data: profiles, isLoading, isError, error } = useAllProfile("business")
 
-  if (isLoading) return <div>Loading profiles...</div>
+  if (isLoading) return <LoadingSpinner />
   if (isError) return <div>Error loading profiles: {error?.message}</div>
 
   // Map profiles to ShowcaseCardItem

@@ -2,6 +2,7 @@
 
 import { DataTable } from '@/components/data-table/data-table'
 import { productColumns } from '@/components/data-table/products-columns'
+import LoadingSpinner from '@/components/loading-spinner'
 import ReviewDialog from '@/components/ReviewDialog'
 import ShowCaseInfo from '@/components/showcase/show-case-info'
 import { Button } from '@/components/ui/button'
@@ -49,7 +50,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   })
 
-  if (isLoading) return <div className="p-4">Loading...</div>
+  if (isLoading) return <LoadingSpinner />
   if (isError || !products) return <div className="p-4">Error loading product</div>
 
   // build the prop for Workspace from original products + store state

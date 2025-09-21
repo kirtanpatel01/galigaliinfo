@@ -4,18 +4,21 @@ import ShowCaseInfo from './show-case-info'
 
 function ShowcaseItem({ product }: { product: Product }) {
   return (
-    <article className="w-full space-y-4 sm:space-y-6">
+    <article className="w-full space-y-6">
       <ShowCaseInfo product={product} />
 
       {/* Product Details */}
       <section
-        className="border rounded-md w-full p-2 sm:p-4 space-y-2"
+        className="border rounded-xl w-full p-4 space-y-3 shadow-sm"
         aria-labelledby="details-heading"
       >
-        <h2 className="font-semibold text-xl underline decoration-1 underline-offset-2" id="details-heading">
-          Details:
+        <h2
+          className="font-semibold text-xl tracking-wide text-foreground"
+          id="details-heading"
+        >
+          Details
         </h2>
-        <p className="break-words">
+        <p className="break-words text-muted-foreground">
           {product.description}
         </p>
       </section>
