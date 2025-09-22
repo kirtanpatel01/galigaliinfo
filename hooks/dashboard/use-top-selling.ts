@@ -24,7 +24,8 @@ export async function fetchTopSellingProducts(shopId: string) {
   const productMap: Record<string, { name: string; total_qty: number }> = {};
 
   data?.forEach((row) => {
-    const product = row.products; // first (and only) product in the array
+    const productArr = row.products; // products is an array
+    const product = Array.isArray(productArr) ? productArr[0] : productArr;
     console.log(product)
     if (!product) return;
 
