@@ -114,7 +114,7 @@ function ShowcaseCard({
           {type === "product" && (
             <div className="border border-amber-300 bg-amber-100 rounded-md px-2 py-1 flex justify-center items-center gap-1 text-amber-700">
             <Star className="size-4" />
-            <span className="text-sm font-medium">{rating}</span>
+            <span className="text-sm font-medium">{rating?.toFixed(1)}</span>
           </div>)}
         </CardContent>
 
