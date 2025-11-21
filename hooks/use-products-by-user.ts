@@ -48,9 +48,7 @@ export function useProductsByUser(userId: string) {
           table: "products",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
-          console.log("Realtime change:", payload)
-
+        () => {
           queryClient.invalidateQueries({ queryKey: ["products", userId] })
         }
       )

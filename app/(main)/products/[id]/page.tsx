@@ -13,8 +13,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   if (isLoading) return <LoadingSpinner />
   if (isError || !product) return <div className="p-4">Error loading product</div>
 
-  console.log(product)
-
   return (
     <div className='p-4 sm:p-6'>
       <ShowcaseItem product={product} />

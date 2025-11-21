@@ -66,7 +66,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     })()
     : null
 
-    console.log(profile.user_id)
   return (
     <div className="flex flex-col">
       <div className="p-4 sm:p-6 border-b">

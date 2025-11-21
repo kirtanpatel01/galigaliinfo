@@ -30,8 +30,6 @@ export function useProductReviews(productId: number) {
 
       if (error) throw error;
 
-      console.log(data)
-
       return (data ?? []).map(r => ({
         ...r,
         profile: r.profile as unknown as ReviewProfile

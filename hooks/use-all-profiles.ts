@@ -12,7 +12,6 @@ async function fetchAllProfile(role: "normal" | "business") {
 
   if (error) throw error;
 
-  console.log(data)
   return data;
 }
 

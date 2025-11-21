@@ -1,5 +1,5 @@
 // constants/sidebarItems.ts
-import { Home, ShoppingBag, HandCoinsIcon, LandPlot, User2Icon, Settings, Shield, Megaphone } from "lucide-react";
+import { Home, ShoppingBag, HandCoinsIcon, User2Icon, Settings, Shield, Megaphone } from "lucide-react";
 
 export const sidebarItemsByRole = {
   public: [

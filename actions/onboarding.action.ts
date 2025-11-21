@@ -11,10 +11,11 @@ export async function saveProfileData(payload: Omit<UserProfile, "user_id">) {
   if (!user) throw new Error("Not authenticated");
 
   // Extract role from user metadata
-  const role = user.user_metadata.data.role;
+  const role = user?.user_metadata?.role;
 
   // Prepare payload for insert
-  const { user_id, ...safePayload } = payload as any;
+  const safePayload = { ...(payload as any) };
+  delete safePayload.user_id;
   const insertPayload = {
     ...safePayload,
     user_id: user.id,

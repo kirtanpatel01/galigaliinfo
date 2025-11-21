@@ -26,7 +26,6 @@ export async function fetchTopSellingProducts(shopId: string) {
   data?.forEach((row) => {
     const productArr = row.products; // products is an array
     const product = Array.isArray(productArr) ? productArr[0] : productArr;
-    console.log(product)
     if (!product) return;
 
     const { product_id, qty } = row;

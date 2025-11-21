@@ -17,7 +17,6 @@ function Page() {
     return <div className="p-4 text-red-500">Failed to load products</div>
   }
 
-  console.log(products)
   return (
     <div>
       <ShowcasePage type='product' showcaseItems={(products ?? []).map(mapProductToCardItem)} />

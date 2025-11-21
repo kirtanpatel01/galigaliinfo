@@ -89,7 +89,7 @@ function Page() {
   }, [supabase])
 
   const schema = useMemo(() => {
-    return user?.user_metadata?.data.role === "business" ? businessSchema : baseSchema;
+    return user?.user_metadata?.role === "business" ? businessSchema : baseSchema;
   }, [user]);
 
   const form = useForm<FormValues>({
@@ -174,7 +174,7 @@ function Page() {
   if (isLoading) return <LoadingSpinner />
   if (isError) return <p>Error: {String(error)}</p>
 
-  const isBusiness = user?.user_metadata?.data.role === "business";
+  const isBusiness = user?.user_metadata?.role === "business";
 
   return (
     <div className="min-h-screen flex justify-center items-center p-6">

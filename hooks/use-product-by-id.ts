@@ -45,7 +45,6 @@ async function fetchProductById(id: string): Promise<Product> {
 
   if (error) throw error
 
-  console.log(data)
 
   const product: Product = {
     ...(data as any),

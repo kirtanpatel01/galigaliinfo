@@ -65,7 +65,7 @@ async function AppSidebar({ role, className = "" }: AppSidebarProps) {
         {/* <SidebarSeparator /> */}
 
         <SidebarGroup>
-          <SidebarGroupLabel>Actions</SidebarGroupLabel>
+          <SidebarGroupLabel>Action</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {/* Theme changer */}
@@ -73,7 +73,7 @@ async function AppSidebar({ role, className = "" }: AppSidebarProps) {
                 <SidebarThemeSwitcher />
               </SidebarMenuItem>
               {/* Login Button */}
-              {!user || role === "public"
+              {!user && role === "public"
                 ? (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>

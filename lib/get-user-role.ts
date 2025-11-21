@@ -7,7 +7,7 @@ export async function getUserRole(): Promise<"admin" | "business" | "normal" | "
 
   if (!user) return "public";
 
-  const role = user?.user_metadata.data.role;
+  const role = user?.user_metadata?.role
 
   if (role === "admin" || role === "business" || role === "normal") {
     return role;
