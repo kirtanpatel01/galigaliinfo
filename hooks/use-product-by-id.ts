@@ -3,8 +3,9 @@
 import { createClient } from "@/lib/supabase/client"
 import { useQuery } from "@tanstack/react-query"
 
+const supabase = createClient();
+
 async function fetchProductById(id: string): Promise<Product> {
-  const supabase = createClient()
   const { data, error } = await supabase
     .from("products")
     .select(`
@@ -45,11 +46,11 @@ async function fetchProductById(id: string): Promise<Product> {
 
   if (error) throw error
 
-
   const product: Product = {
     ...(data as any),
     profile: (data as any).profile ?? null,
   }
+
   return product
 }
 

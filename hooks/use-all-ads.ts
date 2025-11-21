@@ -14,7 +14,7 @@ async function fetchAllAds(): Promise<AdItem[]> {
       image,
       views,
       clicks,
-      products(name)
+      products(name, id)
     `);
 
   if (error) throw error;
@@ -22,6 +22,7 @@ async function fetchAllAds(): Promise<AdItem[]> {
   return data.map((row: any) => ({
     ...row,
     product_name: row.products?.name ?? "",
+    product_id: row.products?.id ?? ""
   }));
 }
 

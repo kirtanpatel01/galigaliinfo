@@ -43,7 +43,7 @@ function AdAside() {
         {visibleAds.map((ad) => (
           <Link
             key={ad.id}
-            href={`/products/${ad.id}`}
+            href={`/products/${ad.product_id}`}
             onClick={() => handleClick(ad)}
           >
             <div className="relative cursor-pointer">
