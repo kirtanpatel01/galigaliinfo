@@ -1,27 +1,49 @@
+// components/workspace.tsx
 'use client'
 
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelectedProducts } from '@/stores/useSelectedProducts'
-import React, { useState, useEffect } from 'react'
 
-// ProductTableItem is your original product type from DB
 export default function Workspace({ product }: { product: ProductTableItem }) {
-  const [qty, setQty] = useState(product.qty)
+  const [qty, setQty] = useState<number>(product.qty)
+  const addProduct = useSelectedProducts((s) => s.addProduct)
   const updateProduct = useSelectedProducts((s) => s.updateProduct)
+  const removeProduct = useSelectedProducts((s) => s.removeProduct)
+  const storeProduct = useSelectedProducts((s) =>
+    s.products.find((p) => p.id === product.id)
+  )
 
-  const lineTotal = product.price * qty
-
-  // Only push qty & lineTotal into store
-  useEffect(() => {
-    updateProduct(product.id, {
-      qty,
-      lineTotal,
-    })
-  }, [qty, product.id, product.price, lineTotal, updateProduct])
+  const lineTotal = useMemo(() => product.price * qty, [product.price, qty])
+  const inCart = Boolean(storeProduct)
 
   useEffect(() => {
-    // whenever a new product arrives, reset the qty state to its value
     setQty(product.qty)
-  }, [product.qty]) // or [product] if id might stay the same
+  }, [product.qty, product.id])
+
+  useEffect(() => {
+    if (!inCart) return
+    if (storeProduct && storeProduct.qty === qty && storeProduct.lineTotal === lineTotal) {
+      return
+    }
+    updateProduct(product.id, { qty, lineTotal })
+  }, [storeProduct, qty, lineTotal, inCart, product.id, updateProduct])
+
+  function handleAdd() {
+    if (inCart) {
+      updateProduct(product.id, { qty, lineTotal })
+    } else {
+      addProduct({
+        id: product.id,
+        qty,
+        lineTotal,
+      })
+    }
+  }
+
+  function handleRemove() {
+    removeProduct(product.id)
+    setQty(product.qty)
+  }
 
   return (
     <div className="border space-y-4 p-2">
@@ -33,7 +55,10 @@ export default function Workspace({ product }: { product: ProductTableItem }) {
           type="number"
           min={1}
           value={qty}
-          onChange={(e) => setQty(Number(e.target.value))}
+          onChange={(e) => {
+            const val = Number(e.target.value)
+            setQty(Number.isNaN(val) || val < 1 ? 1 : Math.floor(val))
+          }}
           className="w-20 border rounded px-2 py-1"
         />
         <span>{product.qty_unit}</span>
@@ -45,6 +70,23 @@ export default function Workspace({ product }: { product: ProductTableItem }) {
 
       <div className="text-lg font-bold">
         Total: ${lineTotal.toFixed(2)}
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={handleAdd}
+          className="px-3 py-1 bg-blue-600 text-white rounded disabled:opacity-60"
+        >
+          {inCart ? 'Update' : 'Add'}
+        </button>
+        {inCart && (
+          <button
+            onClick={handleRemove}
+            className="px-3 py-1 border rounded text-sm"
+          >
+            Remove
+          </button>
+        )}
       </div>
     </div>
   )

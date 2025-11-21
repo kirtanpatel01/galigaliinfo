@@ -1,68 +1,59 @@
-"use client"
+// components/data-table/products-columns.tsx
+'use client'
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "../ui/checkbox";
 
-export const productColumns: ColumnDef<ProductTableItem>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          className="cursor-pointer"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="cursor-pointer"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "name",
-    header: "Product Name"
-  },
-  {
-    accessorKey: "stock",
-    header: () => <div className="text-center">Stock</div>,
-    cell: ({ row }) => (
-      <div className={`font-medium capitalize text-center
-        ${row.getValue("stock") === "available" ? "text-green-400" : "text-red-500"}
-      `}>{row.getValue("stock")}</div>
-    )
-  },
-  {
-    accessorKey: "price",
-    header: () => <div className="text-center">Price</div>,
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("price")}</div>
-    )
-  },
-  {
-    id: "quantityWithUnit", // no accessorKey, we derive value
-    header: () => <div className="text-center">Quantity</div>,
-    cell: ({ row }) => {
-      const qty = row.original.qty; // from the full object
-      const unit = row.original.qty_unit;
-      return (
-        <div className="text-center">
-          {qty} {unit}
-        </div>
-      );
+export function getProductColumns(addedIds: number[]): ColumnDef<ProductTableItem>[] {
+  return [
+    {
+      accessorKey: "name",
+      header: "Product Name",
+      cell: ({ row }) => {
+        const id = row.original.id
+        const inCart = addedIds.includes(id)
+
+        return (
+          <div className="flex items-center gap-2">
+            <span className="truncate">{row.getValue("name")}</span>
+            {inCart && (
+              <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 font-medium">
+                Added
+              </span>
+            )}
+          </div>
+        )
+      }
     },
-  },
-]
+    {
+      accessorKey: "stock",
+      header: () => <div className="text-center">Stock</div>,
+      cell: ({ row }) => (
+        <div className={`font-medium capitalize text-center
+          ${row.getValue("stock") === "available" ? "text-green-400" : "text-red-500"}
+        `}>
+          {row.getValue("stock")}
+        </div>
+      )
+    },
+    {
+      accessorKey: "price",
+      header: () => <div className="text-center">Price</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("price")}</div>
+      )
+    },
+    {
+      id: "quantityWithUnit",
+      header: () => <div className="text-center">Quantity</div>,
+      cell: ({ row }) => {
+        const qty = row.original.qty
+        const unit = row.original.qty_unit
+        return (
+          <div className="text-center">
+            {qty} {unit}
+          </div>
+        )
+      },
+    },
+  ]
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,14 +13,10 @@ interface DataTablePaginationProps<TData> {
 }
 
 export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
-  // memoized derived values (avoid calling these repeatedly inline)
-  const selectedCount = useMemo(() => table.getFilteredSelectedRowModel().rows.length, [table])
-  const filteredCount = useMemo(() => table.getFilteredRowModel().rows.length, [table])
   const pageSize = table.getState().pagination.pageSize ?? 8
   const pageIndex = table.getState().pagination.pageIndex ?? 0
   const pageCount = table.getPageCount()
 
-  // stable handlers that guard against redundant updates
   const onChangePageSize = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSize = Number(e.target.value)
     if (Number.isFinite(newSize) && newSize > 0 && newSize !== table.getState().pagination.pageSize) {
@@ -46,15 +42,10 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between px-2 space-y-4">
-      <div className="text-muted-foreground flex-1 text-sm self-start">
-        {selectedCount} of {filteredCount} row(s) selected.
-      </div>
-
       <div className="flex flex-col min-[425px]:flex-row items-center space-x-6 lg:space-x-8 space-y-4">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
 
-          {/* Native select (stable, simpler than custom Select) */}
           <select
             className="h-8 w-[70px] rounded border px-2"
             value={String(pageSize)}

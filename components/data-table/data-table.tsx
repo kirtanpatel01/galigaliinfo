@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -8,29 +8,34 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  useReactTable
-} from "@tanstack/react-table"
+  useReactTable,
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import { Input } from '../ui/input'
-import { DataTablePagination } from './data-table-pagination'
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "../ui/input";
+import { DataTablePagination } from "./data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[],
-  data: TData[],
-  filterColumnName?: string
-  selection?: boolean
-  paginantion?: boolean
-  onRowClick?: (row: TData) => void
-  onSelectionChange?: (rows: TData[]) => void 
-  canSelectRow?: (row: TData) => boolean
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  filterColumnName?: string;
+  selection?: boolean;
+  paginantion?: boolean;
+  onRowClick?: (row: TData) => void;
+  onSelectionChange?: (rows: TData[]) => void;
+  canSelectRow?: (row: TData) => boolean;
+  activeRowId?: string | number | null;
 }
+
+type MaybeWithId = {
+  id?: string | number;
+};
 
 export function DataTable<TData, TValue>({
   columns,
@@ -40,9 +45,10 @@ export function DataTable<TData, TValue>({
   onRowClick,
   canSelectRow,
   onSelectionChange,
+  activeRowId = null,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [rowSelection, setRowSelection] = useState({})
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -52,37 +58,43 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
     getPaginationRowModel: getPaginationRowModel(),
-    enableRowSelection: (row) => canSelectRow ? canSelectRow(row.original) : true,
+    enableRowSelection: (row) =>
+      canSelectRow ? canSelectRow(row.original) : true,
     state: {
       columnFilters,
       rowSelection,
     },
     initialState: {
       pagination: {
-        pageSize: 8
-      }
-    }
-  })
+        pageSize: 8,
+      },
+    },
+  });
 
   useEffect(() => {
-  if (onSelectionChange) {
-    const selectedRows = table
-      .getSelectedRowModel()
-      .rows.map((row) => row.original) // your ProductTableItem
-    onSelectionChange(selectedRows)
-  }
-}, [rowSelection, table, onSelectionChange])
+    if (onSelectionChange) {
+      const selectedRows = table
+        .getSelectedRowModel()
+        .rows.map((row) => row.original);
+      onSelectionChange(selectedRows);
+    }
+  }, [rowSelection, table, onSelectionChange]);
 
   return (
     <div>
       {/* Searchbar */}
       {filterColumnName && (
-        <div className='flex items-center'>
+        <div className="flex items-center mb-3">
           <Input
-            placeholder='Search products...'
-            value={(table.getColumn(filterColumnName)?.getFilterValue() as string) ?? ''}
+            placeholder="Search products..."
+            value={
+              (table.getColumn(filterColumnName)?.getFilterValue() as string) ??
+              ""
+            }
             onChange={(event) =>
-              table.getColumn(filterColumnName)?.setFilterValue(event.target.value)
+              table
+                .getColumn(filterColumnName)
+                ?.setFilterValue(event.target.value)
             }
             className={`max-w-sm rounded-full`}
           />
@@ -90,7 +102,7 @@ export function DataTable<TData, TValue>({
       )}
 
       {/* Actual Table */}
-      <div className='overflow-hidden rounded-lg border'>
+      <div className="overflow-hidden rounded-lg border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -101,11 +113,11 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -113,29 +125,56 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-                const isSelectable = canSelectRow ? canSelectRow(row.original) : true;
+                const isSelectable = canSelectRow
+                  ? canSelectRow(row.original)
+                  : true;
+
+                const original = row.original as TData & MaybeWithId;
+
+                const hasId =
+                  original.id !== undefined &&
+                  activeRowId !== null &&
+                  activeRowId !== undefined;
+
+                const matchesActive = hasId
+                  ? original.id === activeRowId
+                  : String(row.id) === String(activeRowId);
+
                 return (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={() => {
-                    if(isSelectable) {
-                      onRowClick?.(row.original)
-                    }
-                  }}
-                  className={`${isSelectable ? "cursor-pointer" : "cursor-not-allowed opacity-65"}`}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-                )
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    data-active={matchesActive ? "true" : undefined}
+                    onClick={() => {
+                      if (!isSelectable) return;
+                      if (matchesActive) {
+                        return;
+                      }
+                      onRowClick?.(row.original);
+                    }}
+                    className={`${
+                      isSelectable
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed opacity-65"
+                    } ${matchesActive ? "bg-blue-50 dark:bg-slate-950" : ""}`}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No Result.
                 </TableCell>
               </TableRow>
@@ -147,5 +186,5 @@ export function DataTable<TData, TValue>({
       {/* Pagination */}
       {paginantion && <DataTablePagination table={table} />}
     </div>
-  )
+  );
 }

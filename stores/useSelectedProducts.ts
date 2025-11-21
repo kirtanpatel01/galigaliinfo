@@ -15,22 +15,35 @@ interface SelectedProductsState {
   clear: () => void;
 }
 
-export const useSelectedProducts = create<SelectedProductsState>((set) => ({
+export const useSelectedProducts = create<SelectedProductsState>((set, get) => ({
   products: [],
-  addProduct: (product) =>
-    set((state) => {
-      if (state.products.some((p) => p.id === product.id)) return state;
-      return { products: [...state.products, product] };
-    }),
-  updateProduct: (id, changes) =>
-    set((state) => ({
-      products: state.products.map((p) =>
-        p.id === id ? { ...p, ...changes } : p
-      ),
-    })),
-  removeProduct: (id) =>
-    set((state) => ({
-      products: state.products.filter((p) => p.id !== id),
-    })),
+  addProduct: (product) => {
+    const state = get();
+    if (state.products.some((p) => p.id === product.id)) return;
+    set({ products: [...state.products, product] });
+  },
+  updateProduct: (id, changes) => {
+    const state = get();
+    let didChange = false;
+    const next = state.products.map((p) => {
+      if (p.id !== id) return p;
+      const merged = { ...p, ...changes };
+      // shallow compare
+      if (merged.qty !== p.qty || merged.lineTotal !== p.lineTotal) {
+        didChange = true;
+        return merged;
+      }
+      return p;
+    });
+    if (didChange) {
+      set({ products: next });
+    }
+  },
+  removeProduct: (id) => {
+    const state = get();
+    const next = state.products.filter((p) => p.id !== id);
+    if (next.length === state.products.length) return;
+    set({ products: next });
+  },
   clear: () => set({ products: [] }),
 }));

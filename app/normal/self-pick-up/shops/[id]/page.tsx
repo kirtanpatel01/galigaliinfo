@@ -1,7 +1,7 @@
 'use client'
 
 import { DataTable } from '@/components/data-table/data-table'
-import { productColumns } from '@/components/data-table/products-columns'
+import { getProductColumns } from '@/components/data-table/products-columns'
 import LoadingSpinner from '@/components/loading-spinner'
 import ReviewDialog from '@/components/ReviewDialog'
 import ShowCaseInfo from '@/components/showcase/show-case-info'
@@ -19,14 +19,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const { data: products, isLoading, isError } = useProductsByUser(profile?.user_id)
 
   const [selectedRow, setSelectedRow] = useState<ProductTableItem | null>(null)
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
   const [isReviewOpen, setIsReviewOpen] = useState(false)
 
-  const addProduct = useSelectedProducts((s) => s.addProduct)
   const storeProducts = useSelectedProducts((s) => s.products)
-
-  // compute selected products from store
-  const selectedProducts = storeProducts.filter((p) => selectedIds.includes(p.id))
+  const selectedProducts = storeProducts
 
   const { totalQty, totalAmount } = useMemo(() => {
     const qty = selectedProducts.reduce((sum, p) => sum + p.qty, 0)
@@ -34,9 +30,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     return { totalQty: qty, totalAmount: amount }
   }, [selectedProducts])
 
-  const handleSelectionChange = useCallback((rows: ProductTableItem[]) => {
-    setSelectedIds(rows.map((r) => r.id))
-  }, [])
+  const handleRowClick = useCallback((row: ProductTableItem) => {
+    if (selectedRow?.id === row.id) {
+      return
+    }
+    setSelectedRow(row)
+  }, [selectedRow])
 
   const reviewProducts = selectedProducts.map((sp) => {
     const original = products?.find((p) => p.id === sp.id)
@@ -53,7 +52,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   if (isLoading) return <LoadingSpinner />
   if (isError || !products) return <div className="p-4">Error loading product</div>
 
-  // build the prop for Workspace from original products + store state
   const workspaceProduct = selectedRow
     ? (() => {
       const original = products.find((p) => p.id === selectedRow.id)
@@ -65,6 +63,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       }
     })()
     : null
+  
+    const addedIds = storeProducts.map(p => p.id);
+const productColumns = getProductColumns(addedIds);
 
   return (
     <div className="flex flex-col">
@@ -78,18 +79,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             columns={productColumns}
             data={products}
             filterColumnName="name"
-            selection
             paginantion
-            onRowClick={(row) => {
-              setSelectedRow(row)
-              addProduct({
-                id: row.id,
-                qty: row.qty,
-                lineTotal: row.price * row.qty,
-              })
-            }}
-            onSelectionChange={handleSelectionChange}
-            canSelectRow={(row) => row.stock === 'available'}
+            onRowClick={(row) => handleRowClick(row)}
+            activeRowId={selectedRow?.id ?? null}
           />
         </div>
 
@@ -100,7 +92,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             <div>Click a product to view details</div>
           )}
 
-          {/* Totals display */}
           <div className="border rounded-md">
             <p className="font-medium m-3">Products Selected: {totalQty}</p>
             <Separator />
@@ -109,7 +100,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </p>
           </div>
 
-          {/* Review button */}
           <Button
             onClick={() => setIsReviewOpen(true)}
             disabled={selectedProducts.length === 0}
@@ -117,7 +107,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             Review Selected Products
           </Button>
 
-          {/* Review dialog */}
           <ReviewDialog
             isOpen={isReviewOpen}
             onClose={() => setIsReviewOpen(false)}
