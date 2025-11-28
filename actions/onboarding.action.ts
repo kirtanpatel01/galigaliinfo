@@ -1,27 +1,31 @@
 'use server'
 
 import { createClient } from "@/lib/supabase/server";
+import { ProfileInsert } from "@/types/user";
 
-export async function saveProfileData(payload: Omit<UserProfile, "user_id">) {
+export async function saveProfileData(payload: ProfileInsert) {
   const supabase = await createClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError) throw authError;
   if (!user) throw new Error("Not authenticated");
 
-  const role = user?.user_metadata?.role || user?.user_metadata?.data?.role;
+  const role = user.user_metadata?.role || user.user_metadata?.data?.role;
 
-  const safePayload = { ...(payload as any) };
-  delete safePayload.user_id;
+  // Build final payload cleanly
   const insertPayload = {
-    ...safePayload,
+    ...payload,
     user_id: user.id,
-    role,
+    role: role ?? payload.role ?? "normal",
   };
 
-  return await supabase
+  const { data, error } = await supabase
     .from("profile")
-    .insert([insertPayload])
-    .select();
+    .insert(insertPayload)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
 }
- 
