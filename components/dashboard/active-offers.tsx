@@ -3,6 +3,7 @@
 import { useActiveOffers } from "@/hooks/dashboard/use-active-offers";
 import LoadingSpinner from "../loading-spinner";
 import { Badge } from "@/components/ui/badge";
+import { OfferType } from "@/lib/utils";
 
 interface Props {
   shopId: string;
@@ -32,7 +33,7 @@ export default function ActiveOffers({ shopId }: Props) {
       </div>
     );
 
-  const renderOfferValue = (offer: any) => {
+  const renderOfferValue = (offer: Offer) => {
     switch (offer.type) {
       case "percentage-discount":
         return `${offer.percentage}% off`;

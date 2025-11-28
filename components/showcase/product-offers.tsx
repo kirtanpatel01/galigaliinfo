@@ -1,6 +1,6 @@
 "use client";
 
-import { generateDescFromOffer } from "@/lib/utils";
+import { generateDescFromOffer, OfferType } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 type Offer = {
@@ -55,7 +55,7 @@ export default function ProductOffers({ offers }: ProductOffersProps) {
       <div className="flex flex-col gap-3">
         {offers.map((offer) => {
           const desc = generateDescFromOffer({
-            type: offer.type as any,
+            type: offer.type as OfferType,
             description: offer.description,
             percentage: offer.percentage ?? null,
             amount: offer.amount ?? null,
