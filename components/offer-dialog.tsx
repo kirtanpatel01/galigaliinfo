@@ -24,10 +24,10 @@ import type { UseFormReturn } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 import type {
   Offer as OfferSchema,
-  OfferType,
   ProductFormValues,
 } from "@/components/product-form/product.schema";
 import { generateDescFromOffer } from "@/lib/utils";
+import { OfferType } from "@/types/product";
 
 type TempValues = {
   percentage?: number | null;

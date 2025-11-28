@@ -9,8 +9,6 @@ export const offerTypes = [
   "limited-time-offer",
 ] as const;
 
-export type OfferType = typeof offerTypes[number];
-
 export const offerSchema = z.object({
   id: z.string(),
   type: z.enum(offerTypes),

@@ -4,6 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { useCurrentUser } from "./use-current-user";
+import { AdItem, RawAdWithProduct } from "@/types/ads";
 
 async function fetchAdsByUser(userId: string): Promise<AdItem[]> {
   const supabase = createClient();
@@ -20,16 +21,23 @@ async function fetchAdsByUser(userId: string): Promise<AdItem[]> {
       clicks,
       products(name)
     `)
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .returns<RawAdWithProduct[]>(); // ★ typed
 
   if (error) throw error;
 
-  // flatten product name if you want
-  return data.map((row: any) => ({
-    ...row,
+  return data.map((row) => ({
+    id: row.id,
+    created_at: row.created_at,
+    user_id: row.user_id,
+    product_id: row.product_id,
+    image: row.image,
+    views: row.views,
+    clicks: row.clicks,
     product_name: row.products?.name ?? "",
   }));
 }
+
 
 export function useAdsByUser() {
   const { user } = useCurrentUser();

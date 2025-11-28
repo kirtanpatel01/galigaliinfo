@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Sidebar, SidebarProvider } from "../ui/sidebar";
 import { useAllAds } from "@/hooks/use-all-ads";
 import { createClient } from "@/lib/supabase/client";
+import { AdItem } from "@/types/ads";
 
 const supabase = createClient();
 

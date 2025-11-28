@@ -205,11 +205,3 @@ export type ProductTableItem = {
   qty_unit: string;
   lineTotal: number;
 };
-
-export type TableProduct = {
-  id: number;
-  name: string;
-  price: number;
-  qty: number;
-  qty_unit: string;
-};

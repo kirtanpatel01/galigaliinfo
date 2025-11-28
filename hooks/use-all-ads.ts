@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
+import { AdItem, RawAdWithProductFull } from "@/types/ads";
 
 async function fetchAllAds(): Promise<AdItem[]> {
   const supabase = createClient();
@@ -15,16 +16,23 @@ async function fetchAllAds(): Promise<AdItem[]> {
       views,
       clicks,
       products(name, id)
-    `);
+    `)
+    .returns<RawAdWithProductFull[]>(); // ★ typed
 
   if (error) throw error;
 
-  return data.map((row: any) => ({
-    ...row,
+  return data.map((row) => ({
+    id: row.id,
+    created_at: "", // not fetched here, so empty
+    user_id: "",    // not fetched here
+    product_id: row.products?.id ?? 0,
+    image: row.image,
+    views: row.views,
+    clicks: row.clicks,
     product_name: row.products?.name ?? "",
-    product_id: row.products?.id ?? ""
   }));
 }
+
 
 export function useAllAds() {
   const supabase = createClient();

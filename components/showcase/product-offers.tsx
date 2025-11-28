@@ -2,18 +2,8 @@
 
 import { generateDescFromOffer, OfferType } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Offer } from "@/types/product";
 
-type Offer = {
-  id: number;
-  type: string;
-  description?: string | null;
-  percentage?: number | null;
-  amount?: number | null;
-  qty?: number | null;
-  price?: number | null;
-  expiry?: string | null;
-  product_name?: string | null;
-};
 
 interface ProductOffersProps {
   offers?: Offer[] | null;
