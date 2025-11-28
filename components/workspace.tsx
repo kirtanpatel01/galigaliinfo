@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSelectedProducts } from '@/stores/useSelectedProducts'
+import { ProductTableItem } from '@/types/product'
 
 export default function Workspace({ product }: { product: ProductTableItem }) {
   const [qty, setQty] = useState<number>(product.qty)

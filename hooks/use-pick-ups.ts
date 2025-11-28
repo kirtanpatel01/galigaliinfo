@@ -1,16 +1,9 @@
 // hooks/use-pick-ups.ts
 'use client'
 import { createClient } from "@/lib/supabase/client";
+import { PickUpsTableItem } from "@/types/product";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-
-export type PickUpsTableItem = {
-  id: number;
-  customerName: string;
-  amount: number;
-  noProducts: number;
-  status: "pending" | "rejected" | "accepted" | "confirm";
-};
 
 async function fetchPickUps(): Promise<PickUpsTableItem[]> {
   const supabase = createClient();
@@ -58,7 +51,7 @@ export function usePickUps() {
           schema: 'public',
           table: 'orders', // or your view name if it's a materialized view
         },
-        payload => {
+        () => {
           // whenever something changes, invalidate cache so React Query refetches
           queryClient.invalidateQueries({ queryKey: ['pick-ups'] })
         }

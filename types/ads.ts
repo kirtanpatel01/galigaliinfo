@@ -1,5 +1,5 @@
 // types/ad.ts
-type AdItem = {
+export type AdItem = {
   id: number;
   created_at: string;
   user_id: string;

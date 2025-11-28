@@ -14,6 +14,7 @@ import {
 import DialogCloseBtn from "../dialog-close-btn";
 import OrderItemsTable from "./order-items-table";
 import { Button } from "../ui/button";
+import { SelfPickUpsTableItem } from "@/types/product";
 
 export const selfPickUpsColumns: ColumnDef<SelfPickUpsTableItem>[] = [
   {

@@ -5,6 +5,7 @@ import { Input } from "../ui/input"
 import Link from "next/link"
 import { Button } from "../ui/button"
 import { useMemo, useState } from "react"
+import { ShowcaseCardItem } from "@/types/product"
 
 const linkMap = {
   product: (id: number) => `/products/${id}`,

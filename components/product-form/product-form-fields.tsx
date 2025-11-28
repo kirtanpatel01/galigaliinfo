@@ -1,29 +1,59 @@
-"use client"
+"use client";
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { ProductFormValues } from "./product.schema"
-import { Control } from "react-hook-form"
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { ProductFormValues } from "./product.schema";
+import { Control } from "react-hook-form";
 
 type Props = {
-  control: Control<ProductFormValues>
-}
+  control: Control<ProductFormValues>;
+};
 
 const fields: {
-  name: keyof ProductFormValues
-  label: string
-  placeholder: string
-  type?: string
-  textarea?: boolean
+  name: keyof ProductFormValues;
+  label: string;
+  placeholder: string;
+  type?: string;
+  textarea?: boolean;
 }[] = [
   { name: "name", label: "Product Name", placeholder: "Enter product name" },
-  { name: "description", label: "Description", placeholder: "Enter product details...", textarea: true },
-  { name: "price", label: "Price", placeholder: "Enter product price", type: "number" },
-  { name: "qty", label: "Quantity (per price)", placeholder: "Enter the quantity for above price", type: "number" },
-  { name: "qty_unit", label: "Quantity Unit", placeholder: "Enter product quantity unit" },
-  { name: "qty_available", label: "Available Quantity", placeholder: "Enter the available quantity in your shop", type: "number" },
-]
+  {
+    name: "description",
+    label: "Description",
+    placeholder: "Enter product details...",
+    textarea: true,
+  },
+  {
+    name: "price",
+    label: "Price",
+    placeholder: "Enter product price",
+    type: "number",
+  },
+  {
+    name: "qty",
+    label: "Quantity (per price)",
+    placeholder: "Enter the quantity for above price",
+    type: "number",
+  },
+  {
+    name: "qty_unit",
+    label: "Quantity Unit",
+    placeholder: "Enter product quantity unit",
+  },
+  {
+    name: "qty_available",
+    label: "Available Quantity",
+    placeholder: "Enter the available quantity in your shop",
+    type: "number",
+  },
+];
 
 export default function ProductFormFields({ control }: Props) {
   return (
@@ -50,10 +80,21 @@ export default function ProductFormFields({ control }: Props) {
                     {...field}
                     type={type ?? "text"}
                     placeholder={placeholder}
-                    value={typeof field.value === "string" || typeof field.value === "number" ? field.value : ""}
+                    value={
+                      typeof field.value === "string" ||
+                      typeof field.value === "number"
+                        ? field.value
+                        : ""
+                    }
                     onChange={(e) => {
-                      const val = e.target.value
-                      field.onChange(type === "number" ? (val === "" ? undefined : Number(val)) : val)
+                      const val = e.target.value;
+                      field.onChange(
+                        type === "number"
+                          ? val === ""
+                            ? undefined
+                            : Number(val)
+                          : val
+                      );
                     }}
                     className="rounded-xl border-border focus:border-blue-500 focus:ring-blue-500"
                   />
@@ -65,5 +106,5 @@ export default function ProductFormFields({ control }: Props) {
         />
       ))}
     </div>
-  )
+  );
 }

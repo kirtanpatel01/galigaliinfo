@@ -2,16 +2,17 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
+import { RawReview, Review } from "@/types/product";
 
 const supabase = createClient();
 
-export type Review = {
-  id: number;
-  product: string;
-  user: string;
-  rating: number;
-  content: string;
-};
+// export type Review = {
+//   id: number;
+//   product: string;
+//   user: string;
+//   rating: number;
+//   content: string;
+// };
 
 export async function fetchReviews(shopId: string): Promise<Review[]> {
   const { data, error } = await supabase
@@ -29,13 +30,13 @@ export async function fetchReviews(shopId: string): Promise<Review[]> {
 
   if (error) throw error;
 
-  return data?.map((r: any) => ({
+  return (data as RawReview[]).map(r => ({
     id: r.id,
     rating: r.rating,
     content: r.content,
-    user: r.user?.fullName || "Unknown",
-    product: r.product?.name || "Unknown",
-  })) || [];
+    user: r.user?.[0]?.fullName ?? "Unknown",
+    product: r.product?.[0]?.name ?? "Unknown",
+  }))
 }
 
 export function useReviews(shopId: string) {

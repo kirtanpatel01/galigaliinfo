@@ -3,6 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { createClient } from "@/lib/supabase/client"
 import { useEffect } from "react"
+import { ProductTableItem } from "@/types/product"
 
 async function fetchProductsByUser(userId: string): Promise<ProductTableItem[]> {
   const supabase = createClient()

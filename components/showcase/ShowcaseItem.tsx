@@ -1,3 +1,4 @@
+import { Product } from '@/types/product'
 import ProductOffers from './product-offers'
 import ReviewBox from './review-box'
 import ShowCaseInfo from './show-case-info'
@@ -24,7 +25,16 @@ function ShowcaseItem({ product }: { product: Product }) {
       </section>
 
       <div className="w-full">
-        <ProductOffers offers={product.offers} />
+        <ProductOffers
+          offers={
+            product.offers
+              ? product.offers.map((offer) => ({
+                  ...offer,
+                  id: typeof offer.id === 'string' ? Number(offer.id) : offer.id,
+                }))
+              : product.offers
+          }
+        />
       </div>
 
       {/* Review Section */}

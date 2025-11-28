@@ -11,6 +11,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { updateOrderStatus } from "@/actions/order.actions";
+import { PickUpsTableItem } from "@/types/product";
 
 // map DB statuses to next possible actions
 const actionsByStatus: Record<

@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client"
 import LoadingSpinner from "../loading-spinner"
 import AddReviewDialog from "../add-review-dialog"
 import { motion, AnimatePresence } from "framer-motion"
+import { DBReview } from "@/types/product"
 
 function ReviewBox({ productId, owner }: { productId: number; owner: string }) {
   const { reviews = [], isLoading } = useProductReviews(productId)
@@ -66,7 +67,7 @@ function ReviewBox({ productId, owner }: { productId: number; owner: string }) {
 
       {/* Reviews */}
       <AnimatePresence>
-        {reviews.length === 0 ? (
+        {reviews && reviews.length === 0 ? (
           <motion.p
             key="empty"
             initial={{ opacity: 0 }}
@@ -89,7 +90,7 @@ function ReviewBox({ productId, owner }: { productId: number; owner: string }) {
               }
             }}
           >
-            {reviews.map((review: Review) => (
+            {reviews.map((review: DBReview) => (
               <motion.li
                 key={review.id}
                 initial={{ opacity: 0, y: 15 }}

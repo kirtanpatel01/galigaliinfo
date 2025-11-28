@@ -20,7 +20,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   const defaultValues = {
     name: product.name,
-    description: product.description,
+    description: product.description ?? "",
     images: product.images ?? [],
     price: product.price,        // ensure number
     qty: product.qty,            // ensure number
@@ -29,7 +29,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     offers: product.offers?.map((o: Offer) => ({
       id: o.id.toString(),
       type: o.type,
-      description: o.description,
+      description: o.description ?? "",
       percentage: o.percentage ?? null,
       amount: o.amount ?? null,
       qty: o.qty ?? null,

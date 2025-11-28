@@ -16,6 +16,7 @@ import { useProductsByUser } from "@/hooks/use-products-by-user";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useAdsMutations } from "@/hooks/use-ad-mutations";
 import { toast } from "sonner";
+import { AdItem } from "@/types/ads";
 
 function AdForm({ editable, ad }: { editable: boolean; ad?: AdItem }) {
   const { user } = useCurrentUser();

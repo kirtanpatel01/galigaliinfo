@@ -1,14 +1,16 @@
-'use client'
+"use client";
 
-import { createClient } from "@/lib/supabase/client"
-import { useQuery } from "@tanstack/react-query"
+import { createClient } from "@/lib/supabase/client";
+import { Product, RawProduct } from "@/types/product";
+import { useQuery } from "@tanstack/react-query";
 
 const supabase = createClient();
 
 async function fetchProductById(id: string): Promise<Product> {
   const { data, error } = await supabase
     .from("products")
-    .select(`
+    .select(
+      `
       id,
       user_id,
       name,
@@ -40,18 +42,17 @@ async function fetchProductById(id: string): Promise<Product> {
         pincode,
         shopName
       )
-    `)
+    `
+    )
     .eq("id", id)
-    .single()
+    .single<RawProduct>();
 
-  if (error) throw error
+  if (error) throw error;
 
-  const product: Product = {
-    ...(data as any),
-    profile: (data as any).profile ?? null,
-  }
-
-  return product
+  return {
+    ...data,
+    profile: data.profile ?? null,
+  };
 }
 
 export function useProductById(id: string) {
@@ -59,5 +60,5 @@ export function useProductById(id: string) {
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
     enabled: !!id,
-  })
+  });
 }

@@ -1,6 +1,7 @@
 // components/data-table/products-columns.tsx
 'use client'
 
+import { ProductTableItem } from "@/types/product";
 import { ColumnDef } from "@tanstack/react-table";
 
 export function getProductColumns(addedIds: number[]): ColumnDef<ProductTableItem>[] {

@@ -2,6 +2,7 @@
 'use client'
 
 import { createClient } from "@/lib/supabase/client"
+import { SelfPickUpsTableItem } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
 export async function fetchSelfPickUpOrders(customerId: string): Promise<SelfPickUpsTableItem[]> {

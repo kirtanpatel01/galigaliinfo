@@ -11,6 +11,7 @@ import Workspace from "@/components/workspace";
 import { useProductsByUser } from "@/hooks/use-products-by-user";
 import { useProfileById } from "@/hooks/use-profile";
 import { useSelectedProducts } from "@/stores/useSelectedProducts";
+import { ProductTableItem } from "@/types/product";
 import { useState, useMemo, useCallback, use } from "react";
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {

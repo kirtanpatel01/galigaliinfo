@@ -22,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "../ui/alert-dialog"
+import { ShowcaseCardItem } from "@/types/product"
 
 type ShowcaseCardProps = ShowcaseCardItem & {
   type: "shop" | "product" | "self-pick-up" | "business"

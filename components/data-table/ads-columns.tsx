@@ -14,6 +14,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { useAdsMutations } from "@/hooks/use-ad-mutations";
 import { toast } from "sonner";
 import Image from "next/image";
+import { AdItem } from "@/types/ads";
 
 type Props = {
   ad: AdItem;

@@ -1,4 +1,5 @@
 // ShowCaseInfo.tsx
+import { Product, Profile } from '@/types/product'
 import { Separator } from '../ui/separator'
 import ProductImageGallery from './product-image-gallery'
 

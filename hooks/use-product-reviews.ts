@@ -1,6 +1,7 @@
 'use client'
 
 import { createClient } from "@/lib/supabase/client"
+import { DBReview, ReviewProfile } from "@/types/product";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -8,7 +9,7 @@ export function useProductReviews(productId: number) {
   const queryClient = useQueryClient();
   const supabase = createClient()
 
-  const { data: reviews = [], isLoading, isError } = useQuery<Review[]>({
+  const { data: reviews = [], isLoading, isError } = useQuery<DBReview[]>({
     queryKey: ["reviews", productId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -33,7 +34,7 @@ export function useProductReviews(productId: number) {
       return (data ?? []).map(r => ({
         ...r,
         profile: r.profile as unknown as ReviewProfile
-      }));
+      })) as DBReview[];
     }
   });
 
@@ -54,7 +55,7 @@ export function useProductReviews(productId: number) {
       queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
       toast.success("Review added successfully.");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || "Failed to submit review");
     }
   });

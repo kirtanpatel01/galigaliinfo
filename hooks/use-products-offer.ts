@@ -2,20 +2,21 @@
 "use client"
 
 import { createClient } from "@/lib/supabase/client"
+import { ProductWithOffers, ShowcaseCardItem } from "@/types/product"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 
-export function mapProductToCardItem(product: any): ShowcaseCardItem {
+export function mapProductToCardItem(product: ProductWithOffers): ShowcaseCardItem {
   return {
     id: product.id,
     image: product.images[0],
     title: product.name,
-    shopName: product.profile?.shopName ?? "Unknown Shop",
-    address: product.profile?.address ?? "",
+    shopName: product.profile?.[0]?.shopName ?? "Unknown Shop",
+    address: product.profile?.[0]?.address ?? "",
     rating: product.avgRating ?? 0,
     timeAgo: new Date(product.created_at).toLocaleDateString(),
     isHidden: product.isHidden,
-  }
+  };
 }
 
 async function fetchProductsWithOffers() {
@@ -70,7 +71,7 @@ async function fetchProductsWithOffers() {
 export function useProductsWithOffers() {
   const queryClient = useQueryClient()
 
-  const query = useQuery({
+  const query = useQuery<ProductWithOffers[]>({
     queryKey: ["products-with-offers"],
     queryFn: fetchProductsWithOffers,
     staleTime: 1000 * 60 * 5,
