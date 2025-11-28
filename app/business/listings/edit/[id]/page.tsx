@@ -4,6 +4,7 @@ import React, { use } from 'react'
 import { useProductById } from '@/hooks/use-product-by-id'
 import ProductForm from '@/components/product-form/product-form'
 import LoadingSpinner from '@/components/loading-spinner'
+import { Offer } from '@/types/product'
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
