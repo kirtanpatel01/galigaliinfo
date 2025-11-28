@@ -3,7 +3,6 @@
 import { useActiveOffers } from "@/hooks/dashboard/use-active-offers";
 import LoadingSpinner from "../loading-spinner";
 import { Badge } from "@/components/ui/badge";
-import { OfferType } from "@/lib/utils";
 
 interface Props {
   shopId: string;
