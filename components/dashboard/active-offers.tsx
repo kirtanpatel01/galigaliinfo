@@ -3,6 +3,8 @@
 import { useActiveOffers } from "@/hooks/dashboard/use-active-offers";
 import LoadingSpinner from "../loading-spinner";
 import { Badge } from "@/components/ui/badge";
+import { OfferType } from "@/lib/utils";
+import { Offer } from "@/types/product";
 
 interface Props {
   shopId: string;
@@ -51,7 +53,7 @@ export default function ActiveOffers({ shopId }: Props) {
     }
   };
 
-  const typeLabel = {
+  const typeLabel: Record<OfferType, string>  = {
     "percentage-discount": "Percentage Discount",
     "flat-amount-discount": "Flat Discount",
     "quantity-discount": "Bundle Deal",

@@ -3,22 +3,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
+import { Offer } from "@/types/product";
 
 const supabase = createClient();
 
-export type Offer = {
-  id: number;
-  product_name: string;
-  type: string;
-  description: string;
-  percentage: number | null;
-  amount: number | null;
-  qty: number | null;
-  price: number | null;
-  expiry: string | null;
-};
-
-export async function fetchActiveOffers(shopId: string) {
+export async function fetchActiveOffers(shopId: string): Promise<Offer[]> {
   const { data, error } = await supabase
     .from("offers")
     .select(`
@@ -38,14 +27,14 @@ export async function fetchActiveOffers(shopId: string) {
   if (error) throw error;
 
   // map product name to top level for easier usage
-  return (data ?? []).map((offer: any) => ({
+  return (data ?? []).map((offer: Offer) => ({
     ...offer,
-    product_name: offer.products?.name ?? "Unknown Product",
-  }));
+    product_name: offer.products?.[0]?.name ?? "Unknown Product",
+  })) as Offer[]
 }
 
 export function useActiveOffers(shopId: string) {
-  return useQuery({
+  return useQuery<Offer[]>({
     queryKey: ["active-offers", shopId],
     queryFn: () => fetchActiveOffers(shopId),
     enabled: !!shopId,

@@ -1,13 +1,24 @@
 // types/product.ts
-type Offer = {
+export type OfferType =
+  | "buy-get"
+  | "percentage-discount"
+  | "flat-amount-discount"
+  | "quantity-discount"
+  | "limited-time-offer";
+
+export interface Offer {
   id: string;
-  type: "buy-get" | "percentage-discount" | "flat-amount-discount" | "quantity-discount" | "limited-time-offer";
+  type: OfferType;
   description: string;
   percentage?: number;
   amount?: number;
   qty?: number;
   price?: number;
   expiry?: string | null;
+
+  // when mapping from Supabase (products(name))
+  products?: { name?: string }[];
+  product_name?: string;
 }
 
 type Profile = {
