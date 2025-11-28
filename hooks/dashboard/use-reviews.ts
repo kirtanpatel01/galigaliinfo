@@ -23,7 +23,7 @@ export async function fetchReviews(shopId: string): Promise<Review[]> {
       user: profile(fullName),
       product: products(name)
     `)
-    .eq("shop_id", shopId)
+    .eq("products.user_id", shopId)
     .order("id", { ascending: false })
     .limit(5);
 
@@ -42,6 +42,7 @@ export function useReviews(shopId: string) {
   return useQuery({
     queryKey: ["reviews", shopId], 
     queryFn: () => fetchReviews(shopId), 
-    enabled: !!shopId
+    enabled: !!shopId,
+    staleTime: 1000 * 60 * 60,
   });
 }

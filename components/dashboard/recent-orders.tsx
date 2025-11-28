@@ -9,7 +9,6 @@ interface Props {
 
 export default function RecentOrders({ shopId }: Props) {
   const { data: orders, isLoading, error } = useRecentOrders(shopId);
-
   return (
     <div className="p-4 bg-card text-card-foreground rounded-lg shadow border border-border animate-fade-in">
       <h2 className="text-lg font-semibold mb-3">Recent Orders</h2>
@@ -32,7 +31,7 @@ export default function RecentOrders({ shopId }: Props) {
             {orders.map((o) => (
               <tr key={o.id} className="border-b border-border hover:bg-muted/20 transition-colors">
                 <td className="p-2">{o.id}</td>
-                <td className="p-2">{o.customer?.fullName || "Unknown"}</td>
+                <td className="p-2">{o.customer}</td>
                 <td className="p-2 capitalize">{o.status}</td>
                 <td className="p-2">₹{o.total_amount}</td>
               </tr>

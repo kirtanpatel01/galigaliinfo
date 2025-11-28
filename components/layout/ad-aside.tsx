@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Sidebar } from "../ui/sidebar";
+import { Sidebar, SidebarProvider } from "../ui/sidebar";
 import { useAllAds } from "@/hooks/use-all-ads";
 import { createClient } from "@/lib/supabase/client";
 
@@ -38,30 +38,32 @@ function AdAside() {
   };
 
   return (
-    <Sidebar side="right">
-      <div className="p-4 space-y-4">
-        {visibleAds.map((ad) => (
-          <Link
-            key={ad.id}
-            href={`/products/${ad.product_id}`}
-            onClick={() => handleClick(ad)}
-          >
-            <div className="relative cursor-pointer">
-              <Image
-                src={ad.image || ""}
-                alt={ad.product_name || "ad"}
-                className="size-36 rounded-md object-cover"
-                height={176}
-                width={176}
-              />
-              <span className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded">
-                Ad
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </Sidebar>
+    <SidebarProvider className="w-fit">
+      <Sidebar side="right">
+        <div className="p-4 flex flex-col gap-4">
+          {visibleAds.map((ad) => (
+            <Link
+              key={ad.id}
+              href={`/products/${ad.product_id}`}
+              onClick={() => handleClick(ad)}
+            >
+              <div className="relative cursor-pointer">
+                <Image
+                  src={ad.image || ""}
+                  alt={ad.product_name || "ad"}
+                  className="size-36 rounded-md object-cover"
+                  height={176}
+                  width={176}
+                />
+                <span className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded">
+                  Ad
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </Sidebar>
+    </SidebarProvider>
   );
 }
 

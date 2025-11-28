@@ -77,6 +77,8 @@ function ProductForm({
             expiry: expiry ?? undefined,
           }))
         })
+        
+        router.push("/business/listings");
         toast.success("Product updated successfully.")
       } else {
         await createProductWithOffersAction({
@@ -91,6 +93,7 @@ function ProductForm({
             expiry: expiry ?? undefined,
           }))
         })
+        router.push("/business/listings");
         toast.success("Product created successfully.")
       }
 

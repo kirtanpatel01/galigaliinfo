@@ -87,7 +87,9 @@ export function LoginForm({ className, ...props }: HTMLMotionProps<"div">) {
                 required
                 value={password}
                 className="border border-border"
+                placeholder="Abc@123"
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="off"
               />
               <button
                 type="button"

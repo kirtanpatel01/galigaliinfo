@@ -1,3 +1,4 @@
+// lib/utils.ts
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -5,58 +6,117 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// This check can be removed, it is just for tutorial purposes
-export const hasEnvVars =
-  process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+export type OfferType =
+  | "buy-get"
+  | "percentage-discount"
+  | "flat-amount-discount"
+  | "quantity-discount"
+  | "limited-time-offer";
 
-// lib/utils.ts
-import type { OfferType } from "@/components/product-form/product.schema";
-
-type DescValues = {
-  value?: string | number;
-  qty?: string | number;
-  price?: string | number;
-  expiry?: string | Date | undefined;
+type OfferLike = {
+  type: OfferType;
+  description?: string | null;
+  percentage?: number | null;
+  amount?: number | null;
+  qty?: number | null;
+  price?: number | null;
+  expiry?: string | Date | null;
 };
 
-export function generateDesc(type: OfferType, values: DescValues): string {
-  switch (type) {
+/** format date in a compact, locale-aware way */
+function formatDate(input?: string | Date | null) {
+  if (!input) return "";
+  const d = input instanceof Date ? input : new Date(input);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString();
+}
+
+/** format rupee/INR value safely */
+function formatCurrency(value?: number | null) {
+  if (value === null || value === undefined) return "";
+  try {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(value);
+  } catch {
+    return `₹${value}`;
+  }
+}
+
+/** make safe numeric test */
+function hasNumber(v?: unknown): v is number {
+  return typeof v === "number" && !Number.isNaN(v);
+}
+
+/**
+ * Generate a short, user-friendly description for a given offer.
+ * Uses the most accurate fields available and never returns empty/NULL.
+ */
+export function generateDescFromOffer(offer: OfferLike): string {
+  // prefer the explicit description if it's valid and informative
+  const desc = offer.description?.toString().trim();
+  if (desc) return desc;
+
+  switch (offer.type) {
     case "buy-get":
-      return "Special Offer: Buy one item and get another one completely free!";
+      return "Special Offer: Buy one item and get another one free.";
 
     case "percentage-discount": {
-      const v = values.value;
-      return v !== undefined && v !== null && String(v).trim() !== ""
-        ? `Limited Offer: Get a flat ${v}% discount on this product.`
-        : "Percentage discount available on this product.";
+      if (hasNumber(offer.percentage)) {
+        return `Limited Offer: Get a flat ${offer.percentage}% discount on this product.`;
+      }
+      // fallback
+      return "Percentage discount available on this product.";
     }
 
     case "flat-amount-discount": {
-      const v = values.value;
-      return v !== undefined && v !== null && String(v).trim() !== ""
-        ? `Save more: Enjoy an instant discount of ₹${v} on your purchase.`
-        : "Flat discount available on this product.";
+      if (hasNumber(offer.amount)) {
+        return `Save more: Enjoy an instant discount of ${formatCurrency(
+          offer.amount
+        )} on your purchase.`;
+      }
+      return "Flat amount discount available on this product.";
     }
 
     case "quantity-discount": {
-      const qty = values.qty;
-      const price = values.price;
-      return qty !== undefined && price !== undefined && qty !== null && price !== null
-        ? `Bundle Deal: Buy ${qty} items together for just ₹${price}.`
-        : "Quantity discount available on this product.";
+      if (hasNumber(offer.qty) && hasNumber(offer.price)) {
+        return `Bundle Deal: Buy ${offer.qty} items together for just ${formatCurrency(
+          offer.price
+        )}.`;
+      }
+      // try partial info
+      if (hasNumber(offer.qty)) {
+        return `Quantity discount available when buying ${offer.qty} items.`;
+      }
+      if (hasNumber(offer.price)) {
+        return `Special bundle price: ${formatCurrency(offer.price)} for multiple items.`;
+      }
+      return "Quantity discount available on this product.";
     }
 
     case "limited-time-offer": {
-      const v = values.value;
-      const expiry = values.expiry;
-      const expiryStr = expiry instanceof Date ? expiry.toLocaleDateString() : expiry ?? "";
-      return v !== undefined && v !== null && String(v).trim() !== "" && expiryStr
-        ? `Hurry! Avail ${v} off — valid until ${expiryStr}.`
+      // Prefer percentage -> amount -> generic with expiry
+      if (hasNumber(offer.percentage)) {
+        const expiry = formatDate(offer.expiry);
+        return expiry
+          ? `Hurry! Avail ${offer.percentage}% off — valid until ${expiry}.`
+          : `Hurry! Avail ${offer.percentage}% off for a limited time.`;
+      }
+      if (hasNumber(offer.amount)) {
+        const expiry = formatDate(offer.expiry);
+        return expiry
+          ? `Limited-time: ${formatCurrency(offer.amount)} off — valid until ${expiry}.`
+          : `Limited-time: ${formatCurrency(offer.amount)} off.`;
+      }
+      const expiry = formatDate(offer.expiry);
+      return expiry
+        ? `Hurry! Special offer valid until ${expiry}.`
         : "Limited-time offer available now.";
     }
 
     default:
-      return "Exclusive Offer available on this product.";
+      return "Exclusive offer available on this product.";
   }
 }

@@ -4,8 +4,8 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { FaShoppingCart, FaDollarSign, FaBoxOpen, FaStar, FaTag } from "react-icons/fa";
-import CountUp from "react-countup";
+// import { FaShoppingCart, FaDollarSign, FaBoxOpen, FaStar, FaTag } from "react-icons/fa";
+// import CountUp from "react-countup";
 
 import RecentOrders from "@/components/dashboard/recent-orders";
 import TopProducts from "@/components/dashboard/top-selling";
@@ -27,11 +27,11 @@ export default function DashboardPage() {
     return (
       <div className="p-6 space-y-6">
         {/* Metrics Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="animate-pulse bg-card h-24 rounded shadow" />
           ))}
-        </div>
+        </div> */}
 
         {/* Cards Skeleton */}
         {[...Array(5)].map((_, i) => (
@@ -42,18 +42,18 @@ export default function DashboardPage() {
   }
 
   // Example metrics data
-  const metrics = [
-    { label: "Total Orders", value: 128, icon: <FaShoppingCart className="w-5 h-5 mr-2" /> },
-    { label: "Revenue", value: 45230, icon: <FaDollarSign className="w-5 h-5 mr-2" /> },
-    { label: "Active Products", value: 12, icon: <FaBoxOpen className="w-5 h-5 mr-2" /> },
-    { label: "Avg. Rating", value: 4.3, icon: <FaStar className="w-5 h-5 mr-2" /> },
-    { label: "Active Offers", value: 3, icon: <FaTag className="w-5 h-5 mr-2" /> },
-  ];
+  // const metrics = [
+  //   { label: "Total Orders", value: 128, icon: <FaShoppingCart className="w-5 h-5 mr-2" /> },
+  //   { label: "Revenue", value: 45230, icon: <FaDollarSign className="w-5 h-5 mr-2" /> },
+  //   { label: "Active Products", value: 12, icon: <FaBoxOpen className="w-5 h-5 mr-2" /> },
+  //   { label: "Avg. Rating", value: 4.3, icon: <FaStar className="w-5 h-5 mr-2" /> },
+  //   { label: "Active Offers", value: 3, icon: <FaTag className="w-5 h-5 mr-2" /> },
+  // ];
 
   return (
     <div className="p-6 space-y-6">
       {/* Top Metrics - Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 sticky top-0 z-20 bg-background p-4 rounded shadow mb-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-5 gap-4 sticky top-0 z-20 bg-background p-4 rounded shadow mb-6">
         {metrics.map((m, i) => (
           <motion.div
             key={i}
@@ -68,9 +68,8 @@ export default function DashboardPage() {
             <span className="text-sm text-muted-foreground">{m.label}</span>
           </motion.div>
         ))}
-      </div>
+      </div> */}
 
-      {/* Recent Orders */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -79,8 +78,7 @@ export default function DashboardPage() {
         <RecentOrders shopId={shopId} />
       </motion.div>
 
-      {/* Products Section - Uniform Height */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -100,7 +98,6 @@ export default function DashboardPage() {
         </motion.div>
       </div>
 
-      {/* Ads Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -109,7 +106,6 @@ export default function DashboardPage() {
         <AdsPerformance shopId={shopId} />
       </motion.div>
 
-      {/* Active Offers */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -118,7 +114,6 @@ export default function DashboardPage() {
         <ActiveOffers shopId={shopId} />
       </motion.div>
 
-      {/* Reviews Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

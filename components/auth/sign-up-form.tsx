@@ -104,11 +104,12 @@ export function SignUpForm({
                 required
                 value={password}
                 className="border border-border"
+                placeholder="Abc@123"
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className="absolute top-7.5 right-3 text-muted-foreground"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -124,11 +125,12 @@ export function SignUpForm({
                 required
                 value={repeatPassword}
                 className="border border-border"
+                placeholder="Re-Enter password"
                 onChange={(e) => setRepeatPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className="absolute top-7.5 right-3 text-muted-foreground"
                 onClick={() => setShowRepeatPassword((prev) => !prev)}
               >
                 {showRepeatPassword ? <EyeOff size={20} /> : <Eye size={20} />}

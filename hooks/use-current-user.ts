@@ -7,16 +7,18 @@ export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AuthError | null>(null); 
-  const supabase = createClient();
-
+  
   useEffect(() => {
+    const supabase = createClient();
     async function loadUser() {
       const { data: { user }, error } = await supabase.auth.getUser();
+
+      if(error) setError(error)
+        
       setUser(user);
       setLoading(false);
     }
 
-    if(error) setError(error)
 
     loadUser();
 
@@ -27,7 +29,7 @@ export function useCurrentUser() {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, []);
 
   return { user, loading, error };
 }

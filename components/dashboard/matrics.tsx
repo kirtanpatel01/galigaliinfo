@@ -4,6 +4,7 @@ import LoadingSpinner from '../loading-spinner';
 
 function Matrics({ shopId }: { shopId: string }) {
   const { data: metrics, isLoading: metricsLoading } = useMetrics(shopId);
+  console.log(metrics)
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
       {metricsLoading ? (

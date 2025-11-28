@@ -4,7 +4,6 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { MoreHorizontal, Star } from "lucide-react"
-import Image from "next/image"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +45,8 @@ function ShowcaseCard({
   // Early return AFTER hooks are defined
   if (isHidden && type !== "business") return null
 
+  console.log(shopPhoto)
+
   return (
     <>
       <Card
@@ -85,7 +86,7 @@ function ShowcaseCard({
           )}
 
           {image && type !== "self-pick-up" && (
-            <Image
+            <img
               src={image}
               alt={title}
               height={200}
@@ -94,7 +95,7 @@ function ShowcaseCard({
             />
           )}
           {shopPhoto && type === "self-pick-up" && (
-            <Image
+            <img
               src={shopPhoto}
               alt={title}
               className="h-28 w-full rounded-xl object-cover"

@@ -30,7 +30,7 @@ const ThemeSwitcher = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild className="absolute top-6 right-6">
         <Button variant="ghost" size={"sm"}>
           {theme === "light" ? (
             <Sun

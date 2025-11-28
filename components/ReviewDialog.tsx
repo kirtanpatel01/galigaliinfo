@@ -14,7 +14,8 @@ import { placeOrder } from '@/actions/order.actions'
 
 interface ReviewDialogProps {
   isOpen: boolean
-  onClose: () => void
+  onClose: () => void;
+  clear: () => void
   shopId: string
   products: {
     id: number
@@ -31,8 +32,9 @@ export default function ReviewDialog({
   onClose,
   shopId,
   products,
+  clear
 }: ReviewDialogProps) {
-  const totalProducts = products.reduce((sum, p) => sum + p.qty, 0)
+  const totalProducts = products.length
   const totalAmount = products.reduce((sum, p) => sum + p.lineTotal, 0)
   const [loading, setLoading] = useState(false)
 
@@ -42,6 +44,7 @@ export default function ReviewDialog({
       const orderId = await placeOrder({ shopId, products })
       toast.success(`Order #${orderId} placed successfully`)
       onClose()
+      clear()
     } catch (err: unknown) {
       console.error(err)
       const message =
@@ -68,10 +71,10 @@ export default function ReviewDialog({
               <div>
                 <div className="font-medium">{p.name}</div>
                 <div className="text-sm text-gray-500">
-                  {p.qty} {p.qty_unit} × ${p.price.toFixed(2)}
+                  {p.qty} {p.qty_unit} × ₹{p.price.toFixed(2)}
                 </div>
               </div>
-              <div className="font-semibold">${p.lineTotal.toFixed(2)}</div>
+              <div className="font-semibold">₹{p.lineTotal.toFixed(2)}</div>
             </div>
           ))}
         </div>
@@ -84,7 +87,7 @@ export default function ReviewDialog({
           </div>
           <div className="flex justify-between font-medium">
             <span>Total Amount</span>
-            <span>${totalAmount.toFixed(2)}</span>
+            <span>₹{totalAmount.toFixed(2)}</span>
           </div>
         </div>
 

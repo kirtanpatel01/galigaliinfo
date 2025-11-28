@@ -1,71 +1,80 @@
-'use client'
+"use client";
 
-import { DataTable } from '@/components/data-table/data-table'
-import { getProductColumns } from '@/components/data-table/products-columns'
-import LoadingSpinner from '@/components/loading-spinner'
-import ReviewDialog from '@/components/ReviewDialog'
-import ShowCaseInfo from '@/components/showcase/show-case-info'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import Workspace from '@/components/workspace'
-import { useProductsByUser } from '@/hooks/use-products-by-user'
-import { useProfileById } from '@/hooks/use-profile'
-import { useSelectedProducts } from '@/stores/useSelectedProducts'
-import { useState, useMemo, useCallback, use } from 'react'
+import { DataTable } from "@/components/data-table/data-table";
+import { getProductColumns } from "@/components/data-table/products-columns";
+import LoadingSpinner from "@/components/loading-spinner";
+import ReviewDialog from "@/components/ReviewDialog";
+import ShowCaseInfo from "@/components/showcase/show-case-info";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import Workspace from "@/components/workspace";
+import { useProductsByUser } from "@/hooks/use-products-by-user";
+import { useProfileById } from "@/hooks/use-profile";
+import { useSelectedProducts } from "@/stores/useSelectedProducts";
+import { useState, useMemo, useCallback, use } from "react";
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
-  const { data: profile } = useProfileById(id)
-  const { data: products, isLoading, isError } = useProductsByUser(profile?.user_id)
+  const { id } = use(params);
+  const { data: profile } = useProfileById(id);
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useProductsByUser(profile?.user_id);
 
-  const [selectedRow, setSelectedRow] = useState<ProductTableItem | null>(null)
-  const [isReviewOpen, setIsReviewOpen] = useState(false)
+  const [selectedRow, setSelectedRow] = useState<ProductTableItem | null>(null);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
 
-  const storeProducts = useSelectedProducts((s) => s.products)
-  const selectedProducts = storeProducts
+  const storeProducts = useSelectedProducts((s) => s.products);
+  const clear = useSelectedProducts((s) => s.clear);
+  const selectedProducts = storeProducts;
 
-  const { totalQty, totalAmount } = useMemo(() => {
-    const qty = selectedProducts.reduce((sum, p) => sum + p.qty, 0)
-    const amount = selectedProducts.reduce((sum, p) => sum + p.lineTotal, 0)
-    return { totalQty: qty, totalAmount: amount }
-  }, [selectedProducts])
+  const { totalProducts, totalAmount } = useMemo(() => {
+    const count = selectedProducts.length;
+    const amount = selectedProducts.reduce((sum, p) => sum + p.lineTotal, 0);
+    return { totalProducts: count, totalAmount: amount };
+  }, [selectedProducts]);
 
-  const handleRowClick = useCallback((row: ProductTableItem) => {
-    if (selectedRow?.id === row.id) {
-      return
-    }
-    setSelectedRow(row)
-  }, [selectedRow])
+  const handleRowClick = useCallback(
+    (row: ProductTableItem) => {
+      if (selectedRow?.id === row.id) {
+        return;
+      }
+      setSelectedRow(row);
+    },
+    [selectedRow]
+  );
 
   const reviewProducts = selectedProducts.map((sp) => {
-    const original = products?.find((p) => p.id === sp.id)
+    const original = products?.find((p) => p.id === sp.id);
     return {
       id: sp.id,
-      name: original?.name ?? '',
+      name: original?.name ?? "",
       price: original?.price ?? 0,
       qty: sp.qty,
       qty_unit: original?.qty_unit,
       lineTotal: sp.lineTotal,
-    }
-  })
+    };
+  });
 
-  if (isLoading) return <LoadingSpinner />
-  if (isError || !products) return <div className="p-4">Error loading product</div>
+  if (isLoading) return <LoadingSpinner />;
+  if (isError || !products)
+    return <div className="p-4">Error loading product</div>;
 
   const workspaceProduct = selectedRow
     ? (() => {
-      const original = products.find((p) => p.id === selectedRow.id)
-      const store = storeProducts.find((p) => p.id === selectedRow.id)
-      if (!original) return null
-      return {
-        ...original,
-        qty: store?.qty ?? original.qty,
-      }
-    })()
-    : null
-  
-    const addedIds = storeProducts.map(p => p.id);
-const productColumns = getProductColumns(addedIds);
+        const original = products.find((p) => p.id === selectedRow.id);
+        const store = storeProducts.find((p) => p.id === selectedRow.id);
+        if (!original) return null;
+        return {
+          ...original,
+          qty: store?.qty ?? original.qty,
+        };
+      })()
+    : null;
+
+  const addedIds = storeProducts.map((p) => p.id);
+  const productColumns = getProductColumns(addedIds);
 
   return (
     <div className="flex flex-col">
@@ -93,10 +102,10 @@ const productColumns = getProductColumns(addedIds);
           )}
 
           <div className="border rounded-md">
-            <p className="font-medium m-3">Products Selected: {totalQty}</p>
+            <p className="font-medium m-3">Products Selected: {totalProducts}</p>
             <Separator />
             <p className="font-medium m-3">
-              Total Amount: ${totalAmount.toFixed(2)}
+              Total Amount: ₹{totalAmount.toFixed(2)}
             </p>
           </div>
 
@@ -112,9 +121,10 @@ const productColumns = getProductColumns(addedIds);
             onClose={() => setIsReviewOpen(false)}
             products={reviewProducts}
             shopId={profile.user_id}
+            clear={clear}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }

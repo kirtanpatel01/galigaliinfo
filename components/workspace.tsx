@@ -65,11 +65,11 @@ export default function Workspace({ product }: { product: ProductTableItem }) {
       </div>
 
       <div className="text-sm">
-        <span className="font-medium">Unit Price:</span> ${product.price.toFixed(2)}
+        <span className="font-medium">Unit Price:</span> ₹{product.price.toFixed(2)}
       </div>
 
       <div className="text-lg font-bold">
-        Total: ${lineTotal.toFixed(2)}
+        Total: ₹{lineTotal.toFixed(2)}
       </div>
 
       <div className="flex gap-2">

@@ -1,76 +1,211 @@
 "use client";
 
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { useAds } from "@/hooks/dashboard/use-ads";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
-import { motion } from "framer-motion";
 import LoadingSpinner from "../loading-spinner";
+import { toast } from "sonner";
 
-interface Props {
-  shopId: string;
-}
-
-export default function AdsPerformance({ shopId }: Props) {
+export default function AdsPerformance({ shopId }: { shopId: string }) {
   const { data: ads, isLoading, error } = useAds(shopId);
 
+  if (error) {
+    console.log(error);
+    toast.error(error.message);
+  }
+
+  if (isLoading) return <LoadingSpinner />;
+
+  if (!ads || ads.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Ad Performance</CardTitle>
+          <CardDescription>No ads found</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  const chartData = ads.map((a) => ({
+    product: a.product_name,
+    views: a.views,
+    clicks: a.clicks,
+  }));
+
+  const viewsConfig = {
+    views: { label: "Views", color: "var(--chart-1)" },
+  } satisfies ChartConfig;
+
+  const clicksConfig = {
+    clicks: { label: "Clicks", color: "var(--chart-2)" },
+  } satisfies ChartConfig;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="p-4 bg-card text-card-foreground rounded-lg shadow border border-border flex flex-col"
-    >
-      <h2 className="text-lg font-semibold mb-3">Ad Performance</h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Ad Performance</CardTitle>
+        <CardDescription>Separate charts for Views & Clicks</CardDescription>
+      </CardHeader>
 
-      {isLoading && <LoadingSpinner />}
-      {error && <div className="text-destructive">Error loading ads</div>}
-      {!ads?.length && <div className="text-muted-foreground">No ads found</div>}
+      <CardContent className="space-y-10">
+        <div className="w-full flex flex-col md:flex-row gap-6">
+          {/* -------------------------------- */}
+          {/* VIEWS CHART */}
+          {/* -------------------------------- */}
+          <div className="flex-1">
+            <h3 className="text-sm font-medium mb-2">Views</h3>
 
-      {ads && ads?.length > 0 && (
-        <>
-          {/* Chart */}
-          <div className="w-full h-64 mb-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={ads} margin={{ top: 5, right: 10, bottom: 5, left: 0 }} barGap={8}>
-                <CartesianGrid strokeDasharray="2 2" stroke="#cbd5e1" />
-                <XAxis dataKey="product_name" tick={{ fill: "currentColor", fontSize: 12 }} />
-                <YAxis />
-                <Tooltip
-                  contentStyle={{ backgroundColor: "#f59e0b", borderRadius: 6 }}
-                  itemStyle={{ color: "#fff" }}
+            <ChartContainer config={viewsConfig}>
+              <LineChart
+                accessibilityLayer
+                data={chartData}
+                margin={{ left: 12, right: 12 }}
+              >
+                <CartesianGrid vertical={false} />
+
+                <YAxis
+                  tick={{ fill: "currentColor", fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
                 />
-                <Legend />
-                <Bar dataKey="views" fill="#4f46e5" barSize={14} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="clicks" fill="#f59e0b" barSize={14} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-2">Product</th>
-                  <th className="text-left p-2">Views</th>
-                  <th className="text-left p-2">Clicks</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ads.map((ad) => (
-                  <tr
-                    key={ad.id}
-                    className="border-b border-border hover:bg-muted/10 transition-colors rounded"
-                  >
-                    <td className="p-2">{ad.product_name}</td>
-                    <td className="p-2">{ad.views}</td>
-                    <td className="p-2">{ad.clicks}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                <XAxis
+                  dataKey="product"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) =>
+                    value.length > 10 ? value.slice(0, 10) + "…" : value
+                  }
+                />
+
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent />}
+                />
+
+                <Line
+                  dataKey="views"
+                  type="monotone"
+                  stroke="var(--color-views)"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ChartContainer>
           </div>
-        </>
-      )}
-    </motion.div>
+          {/* -------------------------------- */}
+          {/* CLICKS CHART */}
+          {/* -------------------------------- */}
+          <div className="flex-1">
+            <h3 className="text-md font-semibold mb-2">Clicks</h3>
+
+            <ChartContainer config={clicksConfig}>
+              <LineChart
+                accessibilityLayer
+                data={chartData}
+                margin={{ left: 12, right: 12 }}
+              >
+                <CartesianGrid vertical={false} />
+
+                <YAxis
+                  tick={{ fill: "currentColor", fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+
+                <XAxis
+                  dataKey="product"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) =>
+                    value.length > 10 ? value.slice(0, 10) + "…" : value
+                  }
+                />
+
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent />}
+                />
+
+                <Line
+                  dataKey="clicks"
+                  type="monotone"
+                  stroke="var(--color-clicks)"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+              {/* <ChartLegend content={<ChartLegendContent />} /> */}
+            </ChartContainer>
+          </div>
+        </div>
+
+        {/* -------------------------------- */}
+        {/* TABLE */}
+        {/* -------------------------------- */}
+        <Table>
+          <TableCaption>Performance breakdown for each ad</TableCaption>
+
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[50%]">Product</TableHead>
+              <TableHead className="text-right">Views</TableHead>
+              <TableHead className="text-right">Clicks</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {ads.map((ad) => (
+              <TableRow key={ad.id}>
+                <TableCell className="font-medium">{ad.product_name}</TableCell>
+                <TableCell className="text-right">{ad.views}</TableCell>
+                <TableCell className="text-right">{ad.clicks}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+
+          <TableFooter>
+            <TableRow>
+              <TableCell>Total</TableCell>
+              <TableCell className="text-right">
+                {ads.reduce((s, a) => s + a.views, 0)}
+              </TableCell>
+              <TableCell className="text-right">
+                {ads.reduce((s, a) => s + a.clicks, 0)}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

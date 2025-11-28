@@ -1,72 +1,143 @@
 "use client";
 
+import { PieChart, Pie, Cell } from "recharts";
+
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+
 import { useTopSellingProducts } from "@/hooks/dashboard/use-top-selling";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { motion } from "framer-motion";
 import LoadingSpinner from "../loading-spinner";
 
-interface Props {
-  shopId: string;
-}
-
-export default function TopProducts({ shopId }: Props) {
+export default function TopProducts({ shopId }: { shopId: string }) {
   const { data: products, isLoading, error } = useTopSellingProducts(shopId);
 
+  if (isLoading)
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Selling Products</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LoadingSpinner />
+        </CardContent>
+      </Card>
+    );
+
+  if (error)
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Selling Products</CardTitle>
+          <CardDescription className="text-destructive">
+            Error loading products
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+
+  if (!products || products.length === 0)
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Selling Products</CardTitle>
+          <CardDescription>No sales yet</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+
+  // -------------------------
+  // Data Prep
+  // -------------------------
+  const COLORS = [
+    "var(--chart-1)",
+    "var(--chart-2)",
+    "var(--chart-3)",
+    "var(--chart-4)",
+    "var(--chart-5)",
+    "var(--chart-6)",
+  ];
+
+  const sorted = [...products].sort((a, b) => b.total_qty - a.total_qty);
+
+  const chartData = sorted.map((p, i) => ({
+    name: p.name,
+    value: p.total_qty,
+    fill: COLORS[i % COLORS.length],
+  }));
+
+  const chartConfig = chartData.reduce((acc, item) => {
+    acc[item.name] = {
+      label: item.name,
+      color: item.fill,
+    };
+    return acc;
+  }, {} as ChartConfig);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="p-4 bg-card text-card-foreground rounded-lg shadow border border-border flex flex-col"
-    >
-      <h2 className="text-lg font-semibold mb-3">Top Selling Products</h2>
+    <Card className="flex flex-col">
+      <CardHeader className="items-center pb-0">
+        <CardTitle>Top Selling Products</CardTitle>
+        <CardDescription>
+          Sales distribution across all products
+        </CardDescription>
+      </CardHeader>
 
-      {isLoading && <LoadingSpinner />}
-      {error && <div className="text-destructive">Error loading products</div>}
-      {!products?.length && <div className="text-muted-foreground">No sales yet</div>}
+      <CardContent className="flex-1 pb-0">
+        <ChartContainer
+          config={chartConfig}
+          className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[250px] pb-0"
+        >
+          {/* <ResponsiveContainer width="100%" height="100%"> */}
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
-      {products && products?.length > 0 && (
-        <>
-          {/* Chart */}
-          <div className="w-full h-64 mb-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={products}
-                layout="vertical"
-                margin={{ top: 5, right: 10, bottom: 5, left: 0 }}
-                barCategoryGap="25%"
-              >
-                <CartesianGrid strokeDasharray="2 2" stroke="#cbd5e1" />
-                <XAxis type="number" tick={{ fill: "currentColor", fontSize: 12 }} />
-                <YAxis
-                  type="category"
-                  dataKey="name"
-                  tick={{ fill: "currentColor", fontSize: 12 }}
-                  width={120}
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              label
+              labelLine
+              outerRadius="80%"
+            >
+              {chartData.map((entry, i) => (
+                <Cell key={i} fill={entry.fill} />
+              ))}
+            </Pie>
+          </PieChart>
+          {/* </ResponsiveContainer> */}
+        </ChartContainer>
+      </CardContent>
+
+      {/* Legend under chart */}
+      <CardContent className="pt-2">
+        <ul className="text-sm grid gap-2">
+          {chartData.map((item, i) => (
+            <li key={i} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-block w-3 h-3 rounded-sm"
+                  style={{ backgroundColor: item.fill }}
                 />
-                <Tooltip
-                  contentStyle={{ backgroundColor: "#f59e0b", borderRadius: 6 }}
-                  itemStyle={{ color: "#fff" }}
-                />
-                <Bar dataKey="total_qty" fill="#4f46e5" barSize={16} radius={[4, 4, 4, 4]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+                <span>{item.name}</span>
+              </div>
 
-          {/* List */}
-          <ul className="divide-y divide-border">
-            {products.map((p) => (
-              <li
-                key={p.product_id}
-                className="flex justify-between py-2 text-sm hover:bg-muted/10 transition-colors rounded px-2"
-              >
-                <span>{p.name}</span>
-                <span className="font-medium text-muted-foreground">{p.total_qty} sold</span>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </motion.div>
+              <span className="text-muted-foreground">{item.value} sold</span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   );
 }

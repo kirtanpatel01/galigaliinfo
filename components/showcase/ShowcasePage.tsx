@@ -57,8 +57,8 @@ function ShowcasePage({ type, showcaseItems }: {
       {filteredItems.length === 0 ? (
         <div className="w-full p-6 mt-[var(--header-height)] text-center text-gray-500">
           {query
-            ? `No ${type}s found matching "${query}".`
-            : `No ${type}s available right now.`}
+            ? `No products found matching "${query}".`
+            : `No products available right now.`}
         </div>
       ) : (
         <ul className="w-full p-6 flex flex-wrap gap-6 mt-[var(--header-height)]">

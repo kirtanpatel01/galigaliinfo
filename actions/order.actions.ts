@@ -64,3 +64,18 @@ export async function updateOrderStatus({
 
   return { success: true }
 }
+
+export async function cancelOrder(id: number) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("orders")
+    .delete()
+    .eq("id", id)
+  
+  if(error) {
+    console.error(error);
+     throw error
+  }
+
+  return { success: true }
+}

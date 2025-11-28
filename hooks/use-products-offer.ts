@@ -12,7 +12,7 @@ export function mapProductToCardItem(product: any): ShowcaseCardItem {
     title: product.name,
     shopName: product.profile?.shopName ?? "Unknown Shop",
     address: product.profile?.address ?? "",
-    rating: product.avgRating ?? 0, // use aggregated rating
+    rating: product.avgRating ?? 0,
     timeAgo: new Date(product.created_at).toLocaleDateString(),
     isHidden: product.isHidden,
   }
@@ -30,6 +30,7 @@ async function fetchProductsWithOffers() {
       images,
       created_at,
       isHidden,
+      user_id,
       offers (
         id,
         type,
@@ -76,7 +77,6 @@ export function useProductsWithOffers() {
     refetchOnWindowFocus: false,
   })
 
-  // ✅ subscribe to realtime changes for products + reviews
   useEffect(() => {
     const supabase = createClient()
 
@@ -86,6 +86,7 @@ export function useProductsWithOffers() {
         "postgres_changes",
         { event: "*", schema: "public", table: "products" },
         () => {
+          console.log("update in reviews")
           queryClient.invalidateQueries({ queryKey: ["products-with-offers"] })
         }
       )
@@ -97,6 +98,7 @@ export function useProductsWithOffers() {
         "postgres_changes",
         { event: "*", schema: "public", table: "reviews" },
         () => {
+          console.log("update in reviews")
           queryClient.invalidateQueries({ queryKey: ["products-with-offers"] })
         }
       )

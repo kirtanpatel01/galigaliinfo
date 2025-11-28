@@ -173,7 +173,7 @@ function OfferDialog({ form }: { form: UseFormReturn<ProductFormValues> }) {
                       setTempValues({
                         ...tempValues,
                         price: newPrice,
-                        value: `Buy ${tempValues.qty || ""} for ₹${newPrice}`,
+                        value: `Buy ₹{tempValues.qty || ""} for ₹${newPrice}`,
                       })
                     }}
                   />
