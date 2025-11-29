@@ -61,6 +61,8 @@ export default function ActiveOffers({ shopId }: Props) {
     "limited-time-offer": "Limited Offer",
   };
 
+  console.log(offers)
+
   return (
     <div className="p-4 bg-card rounded-lg shadow border border-border animate-fade-in">
       <h2 className="text-lg font-semibold mb-4">Active Offers</h2>

@@ -34,10 +34,11 @@ export async function fetchReviews(shopId: string): Promise<Review[]> {
     id: r.id,
     rating: r.rating,
     content: r.content,
-    user: r.user?.[0]?.fullName ?? "Unknown",
-    product: r.product?.[0]?.name ?? "Unknown",
+    user: r.user?.fullName ?? "Unknown",
+    product: r.product?.name ?? "Unknown",
   }))
 }
+
 
 export function useReviews(shopId: string) {
   return useQuery({

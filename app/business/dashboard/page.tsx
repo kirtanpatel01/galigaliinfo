@@ -35,7 +35,7 @@ export default function DashboardPage() {
 
         {/* Cards Skeleton */}
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="animate-pulse bg-card h-64 rounded shadow" />
+          <div key={i} className="animate-pulse bg-card h-48 rounded shadow" />
         ))}
       </div>
     );

@@ -128,8 +128,8 @@ export type RawReview = {
   id: number;
   rating: number | null;
   content: string;
-  user: { fullName: string | null }[] | null;
-  product: { name: string | null }[] | null;
+  user?: { fullName: string | null }[] | null;
+  product?: { name: string | null }[] | null;
 };
 
 export type Review = {

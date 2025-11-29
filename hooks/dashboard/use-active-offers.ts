@@ -26,10 +26,11 @@ export async function fetchActiveOffers(shopId: string): Promise<Offer[]> {
 
   if (error) throw error;
 
+  console.log(data)
   // map product name to top level for easier usage
   return (data ?? []).map((offer: Offer) => ({
     ...offer,
-    product_name: offer.products?.[0]?.name ?? "Unknown Product",
+    product_name: offer.products?.name  ?? "Unknown Product",
   })) as Offer[]
 }
 

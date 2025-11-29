@@ -46,8 +46,6 @@ function ShowcaseCard({
   // Early return AFTER hooks are defined
   if (isHidden && type !== "business") return null
 
-  console.log(shopPhoto)
-
   return (
     <>
       <Card
