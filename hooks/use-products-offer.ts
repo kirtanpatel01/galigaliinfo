@@ -7,12 +7,21 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 
 export function mapProductToCardItem(product: ProductWithOffers): ShowcaseCardItem {
+  const profile = product.profile
+  const shopName = Array.isArray(profile)
+      ? profile[0]?.shopName
+      : (profile as { shopName?: string } | undefined)?.shopName;
+
+  const address = Array.isArray(profile)
+      ? profile[0]?.address
+      : (profile as { address?: string } | undefined)?.address;
+
   return {
     id: product.id,
     image: product.images[0],
     title: product.name,
-    shopName: product.profile.shopName ?? "Unknown Shop",
-    address: product.profile?.address ?? "",
+    shopName: shopName ?? "Unknown Shop",
+    address: address ?? "Address Not available",
     rating: product.avgRating ?? 0,
     timeAgo: new Date(product.created_at).toLocaleDateString(),
     isHidden: product.isHidden,
