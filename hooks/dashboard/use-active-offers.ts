@@ -28,10 +28,20 @@ export async function fetchActiveOffers(shopId: string): Promise<Offer[]> {
 
   console.log(data)
   // map product name to top level for easier usage
-  return (data ?? []).map((offer: Offer) => ({
+  return (data ?? []).map((offer: Offer) => {
+  const products = offer.products;
+
+  const productName =
+    Array.isArray(products)
+      ? products[0]?.name
+      : (products as { name?: string } | undefined)?.name;
+
+  return {
     ...offer,
-    product_name: offer.products?.name  ?? "Unknown Product",
-  })) as Offer[]
+    product_name: productName ?? "Unknown Product",
+  };
+}) as Offer[];
+
 }
 
 export function useActiveOffers(shopId: string) {
