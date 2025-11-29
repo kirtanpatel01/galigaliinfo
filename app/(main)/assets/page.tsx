@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function page() {
-  return (
-    <div>Assets Page</div>
-  )
+  return <div>Assets Page</div>;
 }
 
-export default page
+export default page;
